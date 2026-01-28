@@ -5,7 +5,7 @@ services:
     image: swaggerapi/swagger-ui
     container_name: ttalk-swagger-ui
     ports:
-      - "8080:8080"
+      - "9001:8080"
     environment:
       SWAGGER_JSON: /openapi.yaml
     volumes:
