@@ -1,0 +1,1543 @@
+openapi: "3.0.1"
+info:
+  title: "T-Talk"
+  version: "2026-01-23T10:23:42Z"
+servers:
+- url: "https://43j5bd8eo3.execute-api.ap-northeast-1.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: "test"
+security:
+  - bearerAuth: []
+paths:
+  /pull/config-org:
+    get:
+      tags:
+        - "Sync"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /others/graph:
+    get:
+      tags:
+        - "Others"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/update-all:
+    put:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /others/app-data:
+    post:
+      tags:
+        - "Others"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/qr-code:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/get:
+    get:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /push/call:
+    post:
+      tags:
+        - "Push Notifications"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/fetchNameByPttNos:
+    post:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /others/log:
+    post:
+      tags:
+        - "Others"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /others/error-logs:
+    post:
+      tags:
+        - "Others"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /help/delete:
+    delete:
+      tags:
+        - "Help"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /help/import:
+    post:
+      tags:
+        - "Help"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /auth/forgot:
+    post:
+      tags:
+        - "Auth"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/import:
+    post:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /auth/socket-token:
+    get:
+      tags:
+        - "Auth"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/delete-all:
+    post:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /devices/get:
+    get:
+      tags:
+        - "Devices"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /devices/update:
+    put:
+      tags:
+        - "Devices"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/get:
+    get:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/update:
+    put:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/delete:
+    delete:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /Forgot:
+    x-amazon-apigateway-any-method:
+      responses:
+        "200":
+          description: "200 response"
+          content: {}
+  /pull/group:
+    get:
+      tags:
+        - "Sync"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/update:
+    put:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/export:
+    post:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /activities/get:
+    get:
+      tags:
+        - "Activities"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/create:
+    post:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/search:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/list:
+    get:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/list:
+    get:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/delete-all:
+    post:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /others/validate:
+    post:
+      tags:
+        - "Others"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/get:
+    get:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/hint:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /auth/mlogin:
+    post:
+      tags:
+        - "Auth"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - password
+                - deviceId
+              properties:
+                id:
+                  type: string
+                  example: "301653"
+                password:
+                  type: string
+                  example: "password"
+                deviceId:
+                  type: string
+                  example: "5860c423a1f91435"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/create:
+    post:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /pull/config-emp:
+    get:
+      tags:
+        - "Sync"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/import:
+    post:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /help/list:
+    get:
+      tags:
+        - "Help"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /help/create:
+    post:
+      tags:
+        - "Help"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/get:
+    get:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/list:
+    get:
+      tags:
+        - "Employees"
+      parameters:
+        - name: Accept-Language
+          in: header
+          required: false
+          schema:
+            type: string
+            example: "JP"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "20"
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "null"
+        - name: paging
+          in: query
+          required: false
+          schema:
+            type: boolean
+            example: false
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /pull/contacts:
+    get:
+      tags:
+        - "Sync"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/delete:
+    post:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+    delete:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /others/logout:
+    post:
+      tags:
+        - "Others"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/search:
+    post:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/delete-all:
+    post:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/patch-web:
+    patch:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /devices/import:
+    post:
+      tags:
+        - "Devices"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/export:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/export-custom:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/priority:
+    post:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /devices/delete:
+    delete:
+      tags:
+        - "Devices"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /push/notify:
+    post:
+      tags:
+        - "Push Notifications"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /others/dashboard:
+    get:
+      tags:
+        - "Others"
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 99999999999
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: string
+            nullable: true
+            example: "null"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/patch:
+    patch:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/update-all:
+    put:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/create:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /history/list:
+    get:
+      tags:
+        - "History"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/delete:
+    post:
+      tags:
+        - "Contacts"
+      parameters:
+      - name: "Access-Control-Allow-Origin"
+        in: "header"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+    delete:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/import:
+    post:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/generate-id:
+    post:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/import-settings:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/resetorgpassword:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /auth/login:
+    post:
+      tags:
+        - "Auth"
+      summary: "Web Login"
+      description: "Authenticate web user and return a JWT access token."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - password
+              properties:
+                id:
+                  type: string
+                  example: "904249"
+                password:
+                  type: string
+                  example: "password"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/projection:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /devices/list:
+    get:
+      tags:
+        - "Devices"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/export-settings:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /help/upload-request:
+    post:
+      tags:
+        - "Help"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/list:
+    get:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/import:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/delete:
+    delete:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /activities/create:
+    post:
+      tags:
+        - "Activities"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /groups/create:
+    post:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/update-status:
+    put:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /pull/groups:
+    get:
+      tags:
+        - "Groups"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /devices/current:
+    get:
+      tags:
+        - "Devices"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /devices/bulkdelete:
+    delete:
+      tags:
+        - "Devices"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /help/bulkdelete:
+    delete:
+      tags:
+        - "Help"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /devices/create:
+    post:
+      tags:
+        - "Devices"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/bulk-settings:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /help/get:
+    get:
+      tags:
+        - "Help"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/patch:
+    patch:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/export:
+    post:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /activities/list:
+    get:
+      tags:
+        - "Activities"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/search-emp:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /contacts/update:
+    put:
+      tags:
+        - "Contacts"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /users:
+    get:
+      tags:
+        - "Users"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+    put:
+      tags:
+        - "Users"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+    post:
+      tags:
+        - "Users"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+    delete:
+      tags:
+        - "Users"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/export:
+    post:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/get-organization:
+    get:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /Login:
+    x-amazon-apigateway-any-method:
+      responses:
+        "200":
+          description: "200 response"
+          content: {}
+  /organizations/update:
+    put:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /push/token:
+    put:
+      tags:
+        - "Push Notifications"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/projection:
+    post:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /help/update:
+    put:
+      tags:
+        - "Help"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/reset:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /pull/refresh:
+    post:
+      tags:
+        - "Sync"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /employees/delete-all:
+    post:
+      tags:
+        - "Employees"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /organizations/reset:
+    post:
+      tags:
+        - "Organizations"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Enter your JWT token (e.g., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)"
+  schemas:
+    Empty:
+      title: "Empty Schema"
+      type: "object"
+
