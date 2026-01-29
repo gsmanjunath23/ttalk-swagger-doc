@@ -245,36 +245,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Empty"
-  /auth/forgot:
-    post:
-      tags:
-        - "Auth"
-      summary: "Forgot Password"
-      description: "Initiate password reset process for a user."
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: "abc@gmail.com"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
+  # /auth/forgot:
+  #   post:
+  #     tags:
+  #       - "Auth"
+  #     summary: "Forgot Password"
+  #     description: "Initiate password reset process for a user."
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             required:
+  #               - email
+  #             properties:
+  #               email:
+  #                 type: string
+  #                 format: email
+  #                 example: "abc@gmail.com"
+  #     responses:
+  #       "200":
+  #         description: "200 response"
+  #         headers:
+  #           Access-Control-Allow-Orgin:
+  #             schema:
+  #               type: "string"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Empty"
   /organizations/import:
     post:
       tags:
@@ -519,10 +519,10 @@ paths:
               properties:
                 pttNo:
                   type: string
-                  example: "81*13592*5996"
+                  example: "81*16575*0011"
                 check_online_status:
                   type: boolean
-                  example: true
+                  example: false
       responses:
         "200":
           description: "200 response"
