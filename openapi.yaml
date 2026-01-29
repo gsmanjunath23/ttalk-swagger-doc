@@ -9,6 +9,33 @@ servers:
       default: "test"
 security:
   - bearerAuth: []
+tags:
+  - name: "Auth"
+    description: "Authentication APIs"
+  - name: "Others"
+    description: "Dashboard APIs"
+  - name: "Sync"
+    description: "Synchronization APIs"
+  - name: "Organizations"
+    description: "Organizations Management"
+  - name: "Employees"
+    description: "Employees Management"
+  - name: "Groups"
+    description: "Groups Management"
+  - name: "Contacts"
+    description: "Contacts Management"
+  - name: "Devices"
+    description: "Devices Management"
+  - name: "Activities"
+    description: "Activities Management"
+  - name: "Help"
+    description: "Help & Support"
+  - name: "Push Notifications"
+    description: "Push Notification APIs"
+  - name: "History"
+    description: "History APIs"
+  - name: "Users"
+    description: "User Management"
 paths:
   /pull/config-org:
     get:
@@ -25,6 +52,22 @@ paths:
     get:
       tags:
         - "Others"
+      summary: "Get 28-day call activity graph"
+      description: "Returns outgoing call activity data for the last 28 days as a daily graph with total count and average"
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 99999999999
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: string
+            nullable: true
+            example: "null"
       responses:
         "200":
           description: "200 response"
@@ -51,21 +94,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Empty"
-  /others/app-data:
-    post:
-      tags:
-        - "Others"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
+  # /others/app-data:
+  #   post:
+  #     tags:
+  #       - "Others"
+  #     responses:
+  #       "200":
+  #         description: "200 response"
+  #         headers:
+  #           Access-Control-Allow-Orgin:
+  #             schema:
+  #               type: "string"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Empty"
   /employees/qr-code:
     post:
       tags:
@@ -118,25 +161,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Empty"
-  /others/log:
-    post:
-      tags:
-        - "Others"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
+  # /others/log:
+  #   post:
+  #     tags:
+  #       - "Others"
+  #     responses:
+  #       "200":
+  #         description: "200 response"
+  #         headers:
+  #           Access-Control-Allow-Orgin:
+  #             schema:
+  #               type: "string"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Empty"
   /others/error-logs:
     post:
       tags:
         - "Others"
+      summary: "Get PTT application error logs"
+      description: "Retrieves application logs from S3 for a specific PTT number within a date range, with optional filtering by log type and pagination support"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ptt
+                - from
+                - to
+                - paging
+              properties:
+                ptt:
+                  type: string
+                  example: "81*16575*0011"
+                from:
+                  type: string
+                  format: date
+                  example: "2025-12-28"
+                to:
+                  type: string
+                  format: date
+                  example: "2026-01-28"
+                paging:
+                  type: boolean
+                  example: true
       responses:
         "200":
           description: "200 response"
@@ -178,6 +249,21 @@ paths:
     post:
       tags:
         - "Auth"
+      summary: "Forgot Password"
+      description: "Initiate password reset process for a user."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "abc@gmail.com"
       responses:
         "200":
           description: "200 response"
@@ -200,21 +286,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Empty"
-  /auth/socket-token:
-    get:
-      tags:
-        - "Auth"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
+  
   /contacts/delete-all:
     post:
       tags:
@@ -434,6 +506,23 @@ paths:
     post:
       tags:
         - "Others"
+      summary: "Validate PTT Number and Check Device/Online Status"
+      description: "Validates a PTT (Push-to-Talk) number and returns device information along with online status. The API checks if the PTT number format is valid and optionally verifies if the user is online."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pttNo
+              properties:
+                pttNo:
+                  type: string
+                  example: "81*13592*5996"
+                check_online_status:
+                  type: boolean
+                  example: true
       responses:
         "200":
           description: "200 response"
@@ -479,6 +568,8 @@ paths:
     post:
       tags:
         - "Auth"
+      summary: "Mobile Login"
+      description: "Authenticate mobile user and return a JWT access token."
       requestBody:
         required: true
         content:
@@ -672,21 +763,23 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Empty"
-  /others/logout:
-    post:
-      tags:
-        - "Others"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
+  # /others/logout:
+  #   post:
+  #     tags:
+  #       - "Auth"
+  #     description: "Logout API"
+  #     summary: "Invalidate the current JWT token and logout the user."
+  #     responses:
+  #       "200":
+  #         description: "200 response"
+  #         headers:
+  #           Access-Control-Allow-Orgin:
+  #             schema:
+  #               type: "string"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Empty"
   /organizations/search:
     post:
       tags:
@@ -818,6 +911,8 @@ paths:
     get:
       tags:
         - "Others"
+      summary: "Get dashboard statistics"
+      description: "Retrieves dashboard metrics including employee counts, login status, online/offline status, transcription/translation settings, and organization count"
       parameters:
         - name: limit
           in: query
