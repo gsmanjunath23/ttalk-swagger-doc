@@ -1,1638 +1,4205 @@
-openapi: "3.0.1"
+openapi: 3.0.1
 info:
-  title: "T-Talk"
-  version: "2026-01-23T10:23:42Z"
+  title: T-Talk
+  version: '2026-01-23T10:23:42Z'
 servers:
-- url: "https://43j5bd8eo3.execute-api.ap-northeast-1.amazonaws.com/{basePath}"
+- url: https://43j5bd8eo3.execute-api.ap-northeast-1.amazonaws.com/{basePath}
   variables:
     basePath:
-      default: "test"
-security:
-  - bearerAuth: []
+      default: test
+      enum:
+      - test
+      - stage
+      - prod
 tags:
-  - name: "Auth"
-    description: "Authentication APIs"
-  - name: "Others"
-    description: "Dashboard APIs"
-  - name: "Sync"
-    description: "Synchronization APIs"
-  - name: "Organizations"
-    description: "Organizations Management"
-  - name: "Employees"
-    description: "Employees Management"
-  - name: "Groups"
-    description: "Groups Management"
-  - name: "Contacts"
-    description: "Contacts Management"
-  - name: "Devices"
-    description: "Devices Management"
-  - name: "Activities"
-    description: "Activities Management"
-  - name: "Help"
-    description: "Help & Support"
-  - name: "Push Notifications"
-    description: "Push Notification APIs"
-  - name: "History"
-    description: "History APIs"
-  - name: "Users"
-    description: "User Management"
+- name: Auth
+  description: Authentication APIs
+- name: Others
+  description: Dashboard APIs
+- name: Sync
+  description: Synchronization APIs
+- name: Organizations
+  description: Organizations Management
+- name: Employees
+  description: Employees Management
+- name: Groups
+  description: Groups Management
+- name: Contacts
+  description: Contacts Management
+- name: Devices
+  description: Devices Management
+- name: Activities
+  description: Activities Management
+- name: Help
+  description: Help & Support
+- name: Push Notifications
+  description: Push Notification APIs
+- name: History
+  description: History APIs
+- name: Users
+  description: User Management
 paths:
-  /pull/config-org:
-    get:
-      tags:
-        - "Sync"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /others/graph:
-    get:
-      tags:
-        - "Others"
-      summary: "Get 28-day call activity graph"
-      description: "Returns outgoing call activity data for the last 28 days as a daily graph with total count and average"
-      parameters:
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            example: 99999999999
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: string
-            nullable: true
-            example: "null"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/update-all:
-    put:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  # /others/app-data:
-  #   post:
-  #     tags:
-  #       - "Others"
-  #     responses:
-  #       "200":
-  #         description: "200 response"
-  #         headers:
-  #           Access-Control-Allow-Orgin:
-  #             schema:
-  #               type: "string"
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/Empty"
-  /employees/qr-code:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /organizations/get:
-    get:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /push/call:
-    post:
-      tags:
-        - "Push Notifications"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/fetchNameByPttNos:
-    post:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  # /others/log:
-  #   post:
-  #     tags:
-  #       - "Others"
-  #     responses:
-  #       "200":
-  #         description: "200 response"
-  #         headers:
-  #           Access-Control-Allow-Orgin:
-  #             schema:
-  #               type: "string"
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/Empty"
-  /others/error-logs:
-    post:
-      tags:
-        - "Others"
-      summary: "Get PTT application error logs"
-      description: "Retrieves application logs from S3 for a specific PTT number within a date range, with optional filtering by log type and pagination support"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - ptt
-                - from
-                - to
-                - paging
-              properties:
-                ptt:
-                  type: string
-                  example: "81*16575*0011"
-                from:
-                  type: string
-                  format: date
-                  example: "2025-12-28"
-                to:
-                  type: string
-                  format: date
-                  example: "2026-01-28"
-                paging:
-                  type: boolean
-                  example: true
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /help/delete:
-    delete:
-      tags:
-        - "Help"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /help/import:
-    post:
-      tags:
-        - "Help"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  # /auth/forgot:
-  #   post:
-  #     tags:
-  #       - "Auth"
-  #     summary: "Forgot Password"
-  #     description: "Initiate password reset process for a user."
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             type: object
-  #             required:
-  #               - email
-  #             properties:
-  #               email:
-  #                 type: string
-  #                 format: email
-  #                 example: "abc@gmail.com"
-  #     responses:
-  #       "200":
-  #         description: "200 response"
-  #         headers:
-  #           Access-Control-Allow-Orgin:
-  #             schema:
-  #               type: "string"
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/Empty"
-  /organizations/import:
-    post:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  
-  /contacts/delete-all:
-    post:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /devices/get:
-    get:
-      tags:
-        - "Devices"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /devices/update:
-    put:
-      tags:
-        - "Devices"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/get:
-    get:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/update:
-    put:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /organizations/delete:
-    delete:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
   /Forgot:
     x-amazon-apigateway-any-method:
       responses:
-        "200":
-          description: "200 response"
+        '200':
+          description: 200 response
           content: {}
-  /pull/group:
-    get:
-      tags:
-        - "Sync"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/update:
-    put:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/export:
-    post:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /activities/get:
-    get:
-      tags:
-        - "Activities"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/create:
-    post:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/search:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /organizations/list:
-    get:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/list:
-    get:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /organizations/delete-all:
-    post:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /others/validate:
-    post:
-      tags:
-        - "Others"
-      summary: "Validate PTT Number and Check Device/Online Status"
-      description: "Validates a PTT (Push-to-Talk) number and returns device information along with online status. The API checks if the PTT number format is valid and optionally verifies if the user is online."
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - pttNo
-              properties:
-                pttNo:
-                  type: string
-                  example: "81*16575*0011"
-                check_online_status:
-                  type: boolean
-                  example: false
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/get:
-    get:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/hint:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /auth/mlogin:
-    post:
-      tags:
-        - "Auth"
-      summary: "Mobile Login"
-      description: "Authenticate mobile user and return a JWT access token."
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - id
-                - password
-                - deviceId
-              properties:
-                id:
-                  type: string
-                  example: "301653"
-                password:
-                  type: string
-                  example: "password"
-                deviceId:
-                  type: string
-                  example: "5860c423a1f91435"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /organizations/create:
-    post:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /pull/config-emp:
-    get:
-      tags:
-        - "Sync"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/import:
-    post:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /help/list:
-    get:
-      tags:
-        - "Help"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /help/create:
-    post:
-      tags:
-        - "Help"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/get:
-    get:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/list:
-    get:
-      tags:
-        - "Employees"
-      parameters:
-        - name: Accept-Language
-          in: header
-          required: false
-          schema:
-            type: string
-            example: "JP"
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "20"
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "null"
-        - name: paging
-          in: query
-          required: false
-          schema:
-            type: boolean
-            example: false
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /pull/contacts:
-    get:
-      tags:
-        - "Sync"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/delete:
-    post:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-    delete:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  # /others/logout:
-  #   post:
-  #     tags:
-  #       - "Auth"
-  #     description: "Logout API"
-  #     summary: "Invalidate the current JWT token and logout the user."
-  #     responses:
-  #       "200":
-  #         description: "200 response"
-  #         headers:
-  #           Access-Control-Allow-Orgin:
-  #             schema:
-  #               type: "string"
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/Empty"
-  /organizations/search:
-    post:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/delete-all:
-    post:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/patch-web:
-    patch:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /devices/import:
-    post:
-      tags:
-        - "Devices"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/export:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/export-custom:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/priority:
-    post:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /devices/delete:
-    delete:
-      tags:
-        - "Devices"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /push/notify:
-    post:
-      tags:
-        - "Push Notifications"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /others/dashboard:
-    get:
-      tags:
-        - "Others"
-      summary: "Get dashboard statistics"
-      description: "Retrieves dashboard metrics including employee counts, login status, online/offline status, transcription/translation settings, and organization count"
-      parameters:
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            example: 99999999999
-        - name: offset
-          in: query
-          required: false
-          schema:
-            type: string
-            nullable: true
-            example: "null"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/patch:
-    patch:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/update-all:
-    put:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/create:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /history/list:
-    get:
-      tags:
-        - "History"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/delete:
-    post:
-      tags:
-        - "Contacts"
-      parameters:
-      - name: "Access-Control-Allow-Origin"
-        in: "header"
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-    delete:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/import:
-    post:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/generate-id:
-    post:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/import-settings:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/resetorgpassword:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /auth/login:
-    post:
-      tags:
-        - "Auth"
-      summary: "Web Login"
-      description: "Authenticate web user and return a JWT access token."
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - id
-                - password
-              properties:
-                id:
-                  type: string
-                  example: "904249"
-                password:
-                  type: string
-                  example: "password"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/projection:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /devices/list:
-    get:
-      tags:
-        - "Devices"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/export-settings:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /help/upload-request:
-    post:
-      tags:
-        - "Help"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/list:
-    get:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/import:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/delete:
-    delete:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /activities/create:
-    post:
-      tags:
-        - "Activities"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /groups/create:
-    post:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/update-status:
-    put:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /pull/groups:
-    get:
-      tags:
-        - "Groups"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /devices/current:
-    get:
-      tags:
-        - "Devices"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /devices/bulkdelete:
-    delete:
-      tags:
-        - "Devices"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /help/bulkdelete:
-    delete:
-      tags:
-        - "Help"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /devices/create:
-    post:
-      tags:
-        - "Devices"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/bulk-settings:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /help/get:
-    get:
-      tags:
-        - "Help"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /organizations/patch:
-    patch:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/export:
-    post:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /activities/list:
-    get:
-      tags:
-        - "Activities"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/search-emp:
-    post:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /contacts/update:
-    put:
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /users:
-    get:
-      tags:
-        - "Users"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-    put:
-      tags:
-        - "Users"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-    post:
-      tags:
-        - "Users"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-    delete:
-      tags:
-        - "Users"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /organizations/export:
-    post:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/get-organization:
-    get:
-      tags:
-        - "Employees"
-      responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
   /Login:
     x-amazon-apigateway-any-method:
       responses:
-        "200":
-          description: "200 response"
+        '200':
+          description: 200 response
           content: {}
-  /organizations/update:
-    put:
-      tags:
-        - "Organizations"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /push/token:
-    put:
-      tags:
-        - "Push Notifications"
-      responses:
-        "200":
-          description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-  /organizations/projection:
+  /activities/create:
     post:
       tags:
-        - "Organizations"
+      - Activities
       responses:
-        "200":
-          description: "200 response"
+        '200':
+          description: 200 response
           headers:
             Access-Control-Allow-Orgin:
               schema:
-                type: "string"
+                type: string
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Empty"
-  /help/update:
-    put:
+                $ref: '#/components/schemas/Empty'
+  /activities/get:
+    get:
       tags:
-        - "Help"
+      - Activities
       responses:
-        "200":
-          description: "200 response"
+        '200':
+          description: 200 response
           headers:
             Access-Control-Allow-Orgin:
               schema:
-                type: "string"
+                type: string
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Empty"
-  /employees/reset:
-    post:
+                $ref: '#/components/schemas/Empty'
+  /activities/list:
+    get:
       tags:
-        - "Employees"
+      - Activities
       responses:
-        "200":
-          description: "200 response"
+        '200':
+          description: 200 response
           headers:
-            Access-Control-Allow-Origin:
+            Access-Control-Allow-Orgin:
               schema:
-                type: "string"
+                type: string
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Empty"
-  /pull/refresh:
+                $ref: '#/components/schemas/Empty'
+  /auth/login:
     post:
       tags:
-        - "Sync"
+      - Auth
+      summary: Web Login
+      description: Authenticate web user (admin/organization/adminviewer) and return a JWT access token.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - password
+              properties:
+                id:
+                  type: string
+                  example: '904249'
+                password:
+                  type: string
+                  example: password
       responses:
-        "200":
-          description: "200 response"
+        '200':
+          description: Authenticated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Empty"
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Authenticated
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: '904249'
+                          name:
+                            type: string
+                            example: Admin
+                          logo:
+                            type: string
+                            example: ""
+                          pttNo:
+                            type: string
+                            example: ""
+                          roles:
+                            type: array
+                            items:
+                              type: string
+                            example: ["admin"]
+                          version:
+                            type: string
+                            example: v0.0.1
+                      token:
+                        type: object
+                        properties:
+                          access:
+                            type: string
+                            description: JWT access token
+        '404':
+          description: Account not found or not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /auth/mlogin:
+    post:
+      tags:
+      - Auth
+      summary: Mobile Login
+      description: Authenticate mobile user (employee) and return a JWT access token.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - password
+              - deviceId
+              properties:
+                id:
+                  type: string
+                  example: '301653'
+                password:
+                  type: string
+                  example: password
+                deviceId:
+                  type: string
+                  example: 5860c423a1f91435
+      responses:
+        '200':
+          description: Authenticated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Authenticated
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: '301653'
+                          name:
+                            type: string
+                            example: DevA 2
+                          logo:
+                            type: string
+                            example: ""
+                          pttNo:
+                            type: string
+                            example: 81*14946*0011
+                          furigana:
+                            type: string
+                            example: でばえー
+                          organizationId:
+                            type: string
+                            example: '153600'
+                          device:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: 27af056c6c1f23db
+                              startDate:
+                                type: string
+                                format: date
+                                example: '2025-01-01'
+                              endDate:
+                                type: string
+                                format: date
+                                example: '2026-01-01'
+                              todayDate:
+                                type: string
+                                format: date
+                                example: '2026-01-30'
+                      token:
+                        type: object
+                        properties:
+                          access:
+                            type: string
+                            description: JWT access token
+        '404':
+          description: Account not found or not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/create:
+    post:
+      tags:
+      - Contacts
+      summary: Create a new contact
+      description: Creates a new contact for a user.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              - name
+              - furigana
+              - pttNo
+              properties:
+                userId:
+                  type: string
+                  description: ID of the user creating the contact
+                  example: "101670"
+                name:
+                  type: string
+                  description: Contact name
+                  example: "田中太郎"
+                furigana:
+                  type: string
+                  description: Contact name in Japanese phonetic characters (furigana)
+                  example: "たなかたろう"
+                pttNo:
+                  type: string
+                  pattern: ^81\*(\d{5})\*(\d{4})$
+                  description: PTT number in format 81*#####*####
+                  example: "81*10220*1046"
+                isMobile:
+                  type: boolean
+                  description: Whether contact is a mobile user
+                  default: false
+                isBlocked:
+                  type: boolean
+                  description: Whether contact is blocked
+                  default: false
+                isFavorite:
+                  type: boolean
+                  description: Whether contact is marked as favorite
+                  default: false
+      responses:
+        '201':
+          description: Contact created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Record created successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Generated contact ID (ULID)
+                        example: "01HHDKG6QP9DYN1EQ3AT7T7QCQJ"
+                      userStatus:
+                        type: string
+                        nullable: true
+                        description: Online status of the contact user
+                        example: "online"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: PTT number not found in system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error or contact already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/list:
+    get:
+      tags:
+      - Contacts
+      summary: Get paginated list of contacts
+      description: Retrieves a paginated list of contacts for a user with device information. Filters out user's own PTT number from results.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: userId
+        in: query
+        required: true
+        schema:
+          type: string
+        description: User ID to fetch contacts for
+        example: "101670"
+      - name: limit
+        in: query
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: Maximum number of contacts to return
+        example: 50
+      - name: offset
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Pagination cursor (contact ID from previous response, or "null" for first page)
+        example: "null"
+      - name: all
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Whether to fetch all contacts
+      - name: deleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Whether to include deleted contacts
+      - name: isMobile
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Filter by mobile contacts
+      responses:
+        '200':
+          description: Contacts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Records retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        description: Total count of contacts
+                        example: 150
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Contact'
+                      offset:
+                        type: string
+                        nullable: true
+                        description: Cursor for next page (contact ID), null if no more pages
+                        example: "01HHDKG6QP9DYN1EQ3AT7T7QCQJ"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/get:
+    get:
+      tags:
+      - Contacts
+      summary: Get a specific contact by ID
+      description: Retrieves details of a specific contact for a user
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: userId
+        in: query
+        required: true
+        schema:
+          type: string
+        description: User ID who owns the contact
+        example: "101670"
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Contact ID (ULID)
+        example: "01HHDKG6QP9DYN1EQ3AT7T7QCQJ"
+      - name: isMobile
+        in: query
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Contact retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Record retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      Item:
+                        $ref: '#/components/schemas/Contact'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Contact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/update:
+    put:
+      tags:
+      - Contacts
+      summary: Update an existing contact
+      description: Updates contact details.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - userId
+              - name
+              - furigana
+              - pttNo
+              properties:
+                id:
+                  type: string
+                  description: Contact ID to update
+                  example: "01HHDKG6QP9DYN1EQ3AT7T7QCQJ"
+                userId:
+                  type: string
+                  description: User ID who owns the contact
+                  example: "101670"
+                name:
+                  type: string
+                  description: Updated contact name
+                  example: "田中太郎"
+                furigana:
+                  type: string
+                  description: Updated furigana name
+                  example: "たなかたろう"
+                pttNo:
+                  type: string
+                  pattern: ^81\*(\d{5})\*(\d{4})$
+                  description: PTT number (must exist in system)
+                  example: "81*10220*1046"
+                isBlocked:
+                  type: boolean
+                  default: false
+                  description: Whether contact is blocked
+                isFavorite:
+                  type: boolean
+                  default: false
+                  description: Whether contact is favorite
+                isMobile:
+                  type: boolean
+                  default: false
+                  description: Whether contact is mobile
+      responses:
+        '200':
+          description: Contact updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Contact or user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error or PTT number conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/update-all:
+    put:
+      tags:
+      - Contacts
+      summary: Bulk update contact flags
+      description: Updates flags (isBlocked, isFavorite, isMobile) for multiple contacts or all contacts
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              - contactIds
+              properties:
+                userId:
+                  type: string
+                  description: User ID who owns the contacts
+                  example: "101670"
+                contactIds:
+                  oneOf:
+                  - type: array
+                    items:
+                      type: string
+                    minItems: 1
+                    uniqueItems: true
+                    description: Array of contact IDs to update
+                    example: ["01HHDKG6QP9DYN1EQ3AT7T7QCQJ", "01HHEZW0QHAPZZGT7RTSVT8C8ZM"]
+                  - type: string
+                    enum: ["all"]
+                    description: Update all contacts for the user
+                isBlocked:
+                  type: boolean
+                  default: false
+                  description: Set blocked status
+                isFavorite:
+                  type: boolean
+                  default: false
+                  description: Set favorite status
+                isMobile:
+                  type: boolean
+                  default: true
+                  description: Set mobile status
+      responses:
+        '200':
+          description: Contacts updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Contact(s) not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/delete:
+    delete:
+      tags:
+      - Contacts
+      summary: Delete a contact
+      description: Deletes a specific contact for a user
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - userId
+              properties:
+                id:
+                  type: string
+                  description: Contact ID to delete
+                  example: "01HHDKG6QP9DYN1EQ3AT7T7QCQJ"
+                userId:
+                  type: string
+                  description: User ID who owns the contact
+                  example: "101670"
+                isMobile:
+                  type: boolean
+                  description: Whether contact is mobile
+                  default: false
+      responses:
+        '200':
+          description: Contact deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Contact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/delete-all:
+    post:
+      tags:
+      - Contacts
+      summary: Bulk delete contacts
+      description: Deletes multiple contacts and unmaps them from device settings
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                required:
+                - id
+                - userId
+                properties:
+                  id:
+                    type: string
+                    description: Contact ID to delete
+                    example: "01HHDKG6QP9DYN1EQ3AT7T7QCQJ"
+                  userId:
+                    type: string
+                    description: User ID who owns the contact
+                    example: "101670"
+              example:
+              - id: "01HHDKG6QP9DYN1EQ3AT7T7QCQJ"
+                userId: "101670"
+              - id: "01HHEZW0QHAPZZGT7RTSVT8C8ZM"
+                userId: "101670"
+      responses:
+        '200':
+          description: Contacts deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: One or more contacts not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/export:
+    post:
+      tags:
+      - Contacts
+      summary: Export contacts to CSV
+      description: Exports contacts to a CSV file and uploads to S3, returns a pre-signed URL
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              - contactIds
+              properties:
+                userId:
+                  type: string
+                  description: User ID to export contacts for
+                  example: "101670"
+                contactIds:
+                  oneOf:
+                  - type: array
+                    items:
+                      type: string
+                    minItems: 1
+                    uniqueItems: true
+                    description: Array of contact IDs to export
+                    example: ["01HHDKG6QP9DYN1EQ3AT7T7QCQJ", "01HHEZW0QHAPZZGT7RTSVT8C8ZM"]
+                  - type: string
+                    enum: ["all"]
+                    description: Export all contacts for the user
+                filename:
+                  type: string
+                  pattern: ^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}A-Za-z0-9_\-ー]+\.(csv)$
+                  description: Optional filename for the exported CSV (must end with .csv)
+                  example: "contacts_export.csv"
+      responses:
+        '200':
+          description: CSV generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "CSV generated successfully"
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: "document"
+                      extenstion:
+                        type: string
+                        example: "csv"
+                      link:
+                        type: string
+                        description: Pre-signed S3 URL to download the CSV
+                        example: "https://s3.amazonaws.com/bucket/contacts_export.csv?signature=..."
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: No contacts found or user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/import:
+    post:
+      tags:
+      - Contacts
+      summary: Import contacts from CSV file
+      description: Imports contacts from a base64-encoded CSV file. Processing is asynchronous via SQS queue with chunked batches.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - channel
+              - file
+              - operation
+              - ids
+              properties:
+                channel:
+                  type: string
+                  description: WebSocket channel ID for async progress updates dont change
+                  example: "1769775641691904249uploadContact"
+                file:
+                  type: string
+                  format: byte
+                  description: Base64-encoded CSV file with UTF-8 BOM support. Expected columns - ユーザーID, 連絡先ID, 連絡先名, ふりがな, 端末名, 81*#####*####
+                  example: "44Om44O844K244O8SUQs6YCj57Wh5YWISUQs6YCj57Wh5YWI5ZCNLOOBteOCiuOBjOOBqiznq6/mnKvlkI0s54Sh57ea55Wq5Y+3..."
+                operation:
+                  type: string
+                  enum: ["create", "update", "dynamic"]
+                  description: |
+                    - create: Create new contacts only (fails if exists)
+                    - update: Update existing contacts only (fails if not exists)
+                    - dynamic: Create if not exists, update if exists
+                  example: "dynamic"
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 1
+                  uniqueItems: true
+                  description: Array of user IDs to import contacts for (filters out user's own PTT number)
+                  example: [101670, 101498]
+      responses:
+        '200':
+          description: Import started successfully (async processing)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "CSV imported successfully"
+                  data:
+                    type: object
+                    properties:
+                      totalRows:
+                        type: integer
+                        description: Total number of records to be processed
+                        example: 250
+                      invalidRowIndices:
+                        type: array
+                        items:
+                          type: integer
+                        description: Row indices with invalid data (skipped)
+                        example: [5, 12, 34]
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          description: Validation error or invalid CSV format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /contacts/fetchNameByPttNos:
+    post:
+      tags:
+      - Contacts
+      summary: Fetch contact names by PTT numbers
+      description: Retrieves contact names for an array of PTT numbers. Returns results and notFound lists.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - pttNos
+              properties:
+                pttNos:
+                  type: array
+                  items:
+                    type: string
+                    pattern: ^81\*(\d{5})\*(\d{4})$
+                  description: Array of PTT numbers to look up
+                  example: ["81*14946*0011", "81*10220*1046", "81*99999*9999"]
+      responses:
+        '200':
+          description: Names fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Records retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      results:
+                        type: array
+                        description: Array of found contacts
+                        items:
+                          type: object
+                          properties:
+                            pttNo:
+                              type: string
+                              example: "81*14946*0011"
+                            name:
+                              type: string
+                              example: "田中太郎"
+                      notFound:
+                        type: array
+                        description: Array of PTT numbers not found in system
+                        items:
+                          type: string
+                        example: ["81*99999*9999"]
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /devices/bulkdelete:
+    delete:
+      tags:
+      - Devices
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /devices/create:
+    post:
+      tags:
+      - Devices
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /devices/current:
+    get:
+      tags:
+      - Devices
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /devices/delete:
+    delete:
+      tags:
+      - Devices
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /devices/get:
+    get:
+      tags:
+      - Devices
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /devices/import:
+    post:
+      tags:
+      - Devices
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /devices/list:
+    get:
+      tags:
+      - Devices
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /devices/update:
+    put:
+      tags:
+      - Devices
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /employees/create:
+    post:
+      tags:
+      - Employees
+      summary: Create new employee
+      description: Create a new employee with account details and device assignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - furigana
+              - organizationId
+              - accountDetail
+              properties:
+                name:
+                  type: string
+                  description: Employee name
+                  example: Tanaka Taro
+                furigana:
+                  type: string
+                  description: Furigana (Japanese phonetic)
+                  example: たなかたろう
+                organizationId:
+                  type: string
+                  description: Organization ID
+                  example: '202262'
+                accountDetail:
+                  type: object
+                  required:
+                  - employee
+                  properties:
+                    employee:
+                      type: object
+                      required:
+                      - designation
+                      - phoneStatus
+                      - onlineStatus
+                      properties:
+                        designation:
+                          type: string
+                          description: Job designation
+                          example: Manager
+                        machine:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Device ID (required if name provided)
+                              example: 01JY6NN93JSX35S66DQQ8DXXBD
+                            name:
+                              type: string
+                              description: Device name (required if id provided)
+                              example: M1
+                        phoneStatus:
+                          type: string
+                          enum:
+                          - active
+                          - inActive
+                          example: active
+                        email:
+                          type: string
+                          format: email
+                          example: tanaka@example.com
+                        telephoneNo:
+                          type: string
+                          description: Japanese phone format
+                          example: 03-1234-5678
+                        onlineStatus:
+                          type: string
+                          enum:
+                          - online
+                          - offline
+                          example: online
+                        checkOthersOnlineStatus:
+                          type: boolean
+                          example: true
+      responses:
+        '200':
+          description: Employee created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /employees/delete:
+    delete:
+      tags:
+      - Employees
+      summary: Delete employee
+      description: Delete an employee by ID
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+          example: '202334'
+      responses:
+        '200':
+          description: Employee deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
   /employees/delete-all:
     post:
       tags:
-        - "Employees"
+      - Employees
+      summary: Bulk delete employees
+      description: Delete multiple employees by IDs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                required:
+                - id
+                properties:
+                  id:
+                    type: string
+                    example: '202334'
+              example:
+              - id: '202334'
+              - id: '202335'
       responses:
-        "200":
-          description: "200 response"
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: "string"
+        '200':
+          description: Employees deleted successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Empty"
+                $ref: '#/components/schemas/SuccessResponse'
+  /employees/export:
+    post:
+      tags:
+      - Employees
+      summary: Export employees to CSV
+      description: Export employee data to CSV file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              properties:
+                ids:
+                  oneOf:
+                  - type: array
+                    items:
+                      type: integer
+                    minItems: 1
+                    example:
+                    - 202334
+                    - 202335
+                  - type: string
+                    enum:
+                    - all
+                    example: all
+                filename:
+                  type: string
+                  pattern: ^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}A-Za-z0-9_\-ー]+\.(csv)$
+                  example: employees.csv
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+  /employees/export-settings:
+    post:
+      tags:
+      - Employees
+      summary: Export employee settings to CSV
+      description: Export employee sound, call, and device settings to CSV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 1
+                  uniqueItems: true
+                  example:
+                  - 202334
+                  - 202335
+                filename:
+                  type: string
+                  pattern: ^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}A-Za-z0-9_\-ー]+\.(csv)$
+                  example: employee_settings.csv
+      responses:
+        '200':
+          description: Settings CSV generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+  /employees/get:
+    get:
+      tags:
+      - Employees
+      summary: Get employee details by ID
+      description: Retrieve detailed employee information including account details, device info, and timestamps
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+          example: '202334'
+      - name: timezone
+        in: header
+        required: false
+        readOnly: true
+        description: Timezone for timestamp conversion (handled automatically by the client - not user-editable)
+        schema:
+          type: string
+          default: Asia/Tokyo
+          example: Asia/Tokyo
+      responses:
+        '200':
+          description: Successfully retrieved employee details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      Item:
+                        $ref: '#/components/schemas/Employee'
+                      device:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          startDate:
+                            type: string
+                            format: date
+                          endDate:
+                            type: string
+                            format: date
+                          todayDate:
+                            type: string
+                            format: date
+  /employees/import:
+    post:
+      tags:
+      - Employees
+      summary: Import employees from CSV
+      description: Bulk import or update employees from CSV file provided as a base64-encoded string in JSON
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - file
+              - operation
+              - channel
+              properties:
+                file:
+                  type: string
+                  format: byte
+                  description: Base64-encoded CSV file content (string)
+                  example: 77u/RW1wbG95ZWUgTWFjaGluZSBOYW1lLEVtcGxveWVlIElkLFBhc3N3b3JkLE5hbWUsRnVyaWdhbmEgTmFtZSxFbXBsb3llZSBEZXNpZ25hdGlvbixFbXBsb3llZSBlbWFpbCxQVFQgTnVtYmVyLEVtcGxveWVlIFRlbGVwaG9uZSBOdW1iZXIsT3JnYW5pemF0aW9uIE5hbWUsT3JnYW5pemF0aW9uIElkLEVtcGxveWVlIElzIEFjdGl2ZQpNMTc4OTk5LDMwMTY1NCxwYXNzd29yZCx0ZXN0dXNlcjEsdGVzdHVzZXIxLHN3LG1hbm9qMTIxMDE1QGdtYWlsLmNvbSw4MSo0MTgzNCowMDAzLDA5ODc2NDMyMzQsTmV3IGNvbXBhbnksMzAxNjA4LFllcwpoZWxwIHN0YXIsMzAxNjUzLHBhc3N3b3JkLHVzZXIxLHVzZXIxLDEwLCw4MSo0MTg0MCowMDA0LCxUZXN0MTIsMzAxNjQ5LFllcwo=
+                operation:
+                  type: string
+                  enum:
+                  - create
+                  - update
+                  - dynamic
+                  description: Import operation type
+                  example: create
+                channel:
+                  type: string
+                  description: Channel identifier for tracking
+                  example: web-admin
+            example:
+              file: 77u/RW1wbG95ZWUgTWFjaGluZSBOYW1lLEVtcGxveWVlIElkLFBhc3N3b3JkLE5hbWUsRnVyaWdhbmEgTmFtZSxFbXBsb3llZSBEZXNpZ25hdGlvbixFbXBsb3llZSBlbWFpbCxQVFQgTnVtYmVyLEVtcGxveWVlIFRlbGVwaG9uZSBOdW1iZXIsT3JnYW5pemF0aW9uIE5hbWUsT3JnYW5pemF0aW9uIElkLEVtcGxveWVlIElzIEFjdGl2ZQpNMTc4OTk5LDMwMTY1NCxwYXNzd29yZCx0ZXN0dXNlcjEsdGVzdHVzZXIxLHN3LG1hbm9qMTIxMDE1QGdtYWlsLmNvbSw4MSo0MTgzNCowMDAzLDA5ODc2NDMyMzQsTmV3IGNvbXBhbnksMzAxNjA4LFllcwpoZWxwIHN0YXIsMzAxNjUzLHBhc3N3b3JkLHVzZXIxLHVzZXIxLDEwLCw4MSo0MTg0MCowMDA0LCxUZXN0MTIsMzAxNjQ5LFllcwo=
+              operation: dynamic
+              channel: 1769752096225id904249csvUpload
+      responses:
+        '200':
+          description: Import completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      success:
+                        type: integer
+                      failed:
+                        type: integer
+                      errors:
+                        type: array
+                        items:
+                          type: object
+  /employees/import-settings:
+    post:
+      tags:
+      - Employees
+      summary: Import employee settings from CSV
+      description: Bulk update employee settings from CSV file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - channel
+              - ids
+              - file
+              properties:
+                channel:
+                  type: string
+                  description: Channel identifier
+                  example: web-admin
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 1
+                  example:
+                  - 202334
+                  - 202335
+                file:
+                  type: string
+                  format: base64
+                  description: Base64 encoded settings CSV
+      responses:
+        '200':
+          description: Settings imported successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /employees/list:
+    get:
+      tags:
+      - Employees
+      summary: List employees with pagination
+      description: Retrieve a paginated list of employees
+      parameters:
+      - name: limit
+        in: query
+        required: true
+        schema:
+          type: integer
+          example: 50
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "null"
+      responses:
+        '200':
+          description: Successfully retrieved employee list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Employee'
+                      Count:
+                        type: integer
+                      LastEvaluatedKey:
+                        type: string
+  /employees/qr-code:
+    post:
+      tags:
+      - Employees
+      summary: Generate employee QR codes PDF
+      description: Generates a PDF containing QR codes for specified employee IDs including PTT number, name, hint, and device information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              - filename
+              properties:
+                ids:
+                  oneOf:
+                  - type: array
+                    items:
+                      type: integer
+                    minItems: 1
+                    example:
+                    - 202334
+                    - 202335
+                  - type: string
+                    enum:
+                    - all
+                    example: all
+                filename:
+                  type: string
+                  pattern: ^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}A-Za-z0-9_\-ー]+\.(pdf)$
+                  example: Qrcodeexport.pdf
+      responses:
+        '200':
+          description: PDF generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: S3 URL to download PDF
+  /employees/reset:
+    post:
+      tags:
+      - Employees
+      summary: Reset employee password
+      description: Reset employee password to default
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: string
+                  example: '202334'
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /employees/search-emp:
+    post:
+      tags:
+      - Employees
+      summary: Search employees with filters
+      description: Advanced search for employees with multiple filter criteria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employeeId:
+                  type: string
+                  example: '202334'
+                employeeName:
+                  type: string
+                  example: Tanaka
+                organization:
+                  type: string
+                  example: '202262'
+                pttNo:
+                  type: string
+                  example: 81*12345*6789
+                device:
+                  type: string
+                  example: M1
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: '2025-01-15T10:30:00.000Z'
+                appVersion:
+                  type: string
+                  example: '8'
+                appLoginDateTime:
+                  type: string
+                  format: date-time
+                appLogoutDateTime:
+                  type: string
+                  format: date-time
+                appLastSeenDateTime:
+                  type: string
+                  format: date-time
+                appOnlineStatus:
+                  type: string
+                  enum:
+                  - online
+                  - offline
+                  - away
+                  - unknown
+                  - deactivate
+                limit:
+                  type: integer
+                  example: 50
+                offset:
+                  type: string
+                  example: takefromresponse
+                paging:
+                  type: boolean
+                  example: false
+                  readOnly: true
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Employee'
+                      Count:
+                        type: integer
+  /employees/update:
+    put:
+      tags:
+      - Employees
+      summary: Update employee details
+      description: Update employee information including name, organization, device assignment, and settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - name
+              - furigana
+              - organizationId
+              - accountDetail
+              properties:
+                id:
+                  type: string
+                  description: Employee ID
+                  example: '202334'
+                name:
+                  type: string
+                  description: Employee name
+                  example: nayana user11
+                furigana:
+                  type: string
+                  description: Furigana (Japanese phonetic)
+                  example: user11
+                organizationId:
+                  type: string
+                  description: Organization ID
+                  example: '202262'
+                isActive:
+                  type: boolean
+                  description: Active status
+                  example: true
+                checkOthersOnlineStatus:
+                  type: boolean
+                  example: true
+                viewUserActivity:
+                  type: boolean
+                  example: true
+                accountDetail:
+                  type: object
+                  required:
+                  - employee
+                  properties:
+                    employee:
+                      type: object
+                      required:
+                      - designation
+                      - phoneStatus
+                      - onlineStatus
+                      properties:
+                        designation:
+                          type: string
+                          example: designation
+                        machine:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 01JY6NN93JSX35S66DQQ8DXXBD
+                            name:
+                              type: string
+                              example: M1
+                        phoneStatus:
+                          type: string
+                          enum:
+                          - active
+                          - inActive
+                          example: active
+                        email:
+                          type: string
+                          format: email
+                          example: ''
+                        telephoneNo:
+                          type: string
+                          example: ''
+                        onlineStatus:
+                          type: string
+                          enum:
+                          - online
+                          - offline
+                          example: online
+                        checkOthersOnlineStatus:
+                          type: boolean
+                          example: true
+                        viewUserActivity:
+                          type: boolean
+                          example: true
+      responses:
+        '200':
+          description: Employee updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /employees/update-status:
+    post:
+      tags:
+      - Employees
+      summary: Update employee status
+      description: Update employee online/offline status by PTT number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - pttNo
+              properties:
+                pttNo:
+                  type: string
+                  description: PTT number
+                  example: 81*12345*6789
+                status:
+                  type: string
+                  description: Status to set
+                  example: online
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /groups/create:
+    post:
+      tags:
+      - Groups
+      summary: Create group
+      description: Create a new group for a user with members identified by PTT numbers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              - name
+              - furigana
+              - pttNo
+              properties:
+                userId:
+                  type: string
+                  description: Owner user ID
+                  example: '101521'
+                name:
+                  type: string
+                  description: Group name
+                  example: Group1
+                furigana:
+                  type: string
+                  description: Group name in phonetic kana
+                  example: グループ1
+                standByGroup:
+                  type: boolean
+                  description: Mark group as standby group
+                  example: false
+                pttNo:
+                  type: array
+                  minItems: 1
+                  uniqueItems: true
+                  description: Member PTT numbers
+                  items:
+                    type: string
+                    example: 81*12345*6789
+                isBlocked:
+                  type: boolean
+                  description: Blocked flag
+                  example: false
+                isFavorite:
+                  type: boolean
+                  description: Favorite flag
+                  example: false
+                isMobile:
+                  type: boolean
+                  description: Mobile group flag
+                  example: false
+            example:
+              userId: '101521'
+              name: test007
+              furigana: テスト007
+              pttNo:
+              - 81*12345*6789
+              - 81*12345*6790
+              standByGroup: false
+              isFavorite: false
+              isBlocked: false
+              isMobile: false
+      responses:
+        '201':
+          description: Group created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: Record created successfully
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Generated group ID
+                        example: '#01'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Record not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/delete:
+    delete:
+      tags:
+      - Groups
+      summary: Delete group
+      description: Delete a group for a specific user (or remove the user from the group if more members exist).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              - id
+              properties:
+                userId:
+                  type: string
+                  description: Owner user ID
+                  example: '202333'
+                id:
+                  type: string
+                  description: Group ID
+                  example: '#149253'
+      responses:
+        '200':
+          description: Group deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Group not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/delete-all:
+    post:
+      tags:
+      - Groups
+      summary: Bulk delete groups
+      description: Delete multiple groups by IDs for specific users.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                required:
+                - id
+                - userId
+                properties:
+                  id:
+                    type: string
+                    description: Group ID
+                    example: '#152563'
+                  userId:
+                    type: string
+                    description: Owner user ID
+                    example: '197504'
+            example:
+            - id: '#152563'
+              userId: '197504'
+      responses:
+        '200':
+          description: Groups deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Groups not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/export:
+    post:
+      tags:
+      - Groups
+      summary: Export groups to CSV
+      description: Export group data to CSV file for a given user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              - groupIds
+              properties:
+                userId:
+                  type: string
+                  description: Owner user ID
+                  example: '101623'
+                groupIds:
+                  oneOf:
+                  - type: array
+                    items:
+                      type: string
+                    minItems: 1
+                    uniqueItems: true
+                    example:
+                    - '#03'
+                    - '#01'
+                  - type: string
+                    enum:
+                    - all
+                    example: all
+                limit:
+                  type: integer
+                  description: Optional limit for export
+                  example: 99999999999
+                offset:
+                  type: string
+                  description: Optional pagination offset
+                  example: "null"
+                filename:
+                  type: string
+                  description: Output filename (must end with .csv)
+                  pattern: ^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}A-Za-z0-9_\-ー]+\.csv$
+                  example: Groups_sample_101623.csv
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Csv file generated successfully
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Generated filename
+                        example: Groups_sample_101623.csv
+                      path:
+                        type: string
+                        description: S3 URL for CSV download
+                        example: https://bucket.s3.ap-northeast-1.amazonaws.com/sheets/csv/groups/Groups_sample_101623.csv
+        '401':
+          description: Unauthorized
+        '404':
+          description: Record not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/generate-id:
+    post:
+      tags:
+      - Groups
+      summary: Generate group ID
+      description: Generate a random 4-digit group ID reference.
+      responses:
+        '200':
+          description: Group ID generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1234
+        '500':
+          description: Internal server error
+  /groups/get:
+    get:
+      tags:
+      - Groups
+      summary: Get group details
+      description: Retrieve group details and members for a specific user and group.
+      parameters:
+      - name: userId
+        in: query
+        required: true
+        description: Owner user ID
+        schema:
+          type: string
+          example: '101438'
+      - name: id
+        in: query
+        required: true
+        description: Group ID
+        schema:
+          type: string
+          example: '#01'
+      responses:
+        '200':
+          description: Group retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Record retrieved successfully
+                  data:
+                    type: object
+                    properties:
+                      Item:
+                        type: object
+                        properties:
+                          receiver:
+                            type: object
+                            properties:
+                              receiver:
+                                type: boolean
+                              displayOrder:
+                                type: string
+                          sender:
+                            type: string
+                            example: '1'
+                          furigana:
+                            type: string
+                            example: グループ1
+                          standByGroup:
+                            type: boolean
+                            example: false
+                          userId:
+                            type: string
+                            example: '101438'
+                          groupId:
+                            type: string
+                            example: '#01'
+                          contactsCount:
+                            type: integer
+                            example: 3
+                          isDeleted:
+                            type: boolean
+                            example: false
+                          name:
+                            type: string
+                            example: Group1
+                          isBlocked:
+                            type: boolean
+                            example: false
+                          isFavorite:
+                            type: boolean
+                            example: false
+                          isMobile:
+                            type: boolean
+                            example: false
+                          contacts:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/GroupContact'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Group not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/import:
+    post:
+      tags:
+      - Groups
+      summary: Import groups from CSV
+      description: Import group data from a base64-encoded CSV file.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - channel
+              - file
+              - operation
+              - ids
+              properties:
+                channel:
+                  type: string
+                  description: Import channel identifier
+                  example: 1703147980379groupCsvUpload
+                file:
+                  type: string
+                  format: byte
+                  description: Base64-encoded CSV file content
+                operation:
+                  type: string
+                  enum:
+                  - dynamic
+                  description: Import operation type
+                  example: dynamic
+                ids:
+                  type: array
+                  minItems: 1
+                  uniqueItems: true
+                  description: Target user IDs for import
+                  items:
+                    type: integer
+                  example:
+                  - 101625
+      responses:
+        '200':
+          description: Import completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Csv file imported successfully
+                  data:
+                    type: object
+                    properties:
+                      totalRows:
+                        type: integer
+                        example: 120
+                      invalidRowIndices:
+                        type: array
+                        items:
+                          type: integer
+                      failureFile:
+                        type: string
+                        description: Failure CSV file URL (if generated)
+                        example: https://bucket.s3.ap-northeast-1.amazonaws.com/sheets/csv/failures/failures.csv
+        '401':
+          description: Unauthorized
+        '404':
+          description: Record not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/list:
+    get:
+      tags:
+      - Groups
+      summary: List groups
+      description: Retrieve a paginated list of groups for a user.
+      parameters:
+      - name: userId
+        in: query
+        required: true
+        description: Owner user ID
+        schema:
+          type: string
+          example: '101491'
+      - name: limit
+        in: query
+        required: true
+        description: Number of records to return
+        schema:
+          type: integer
+          example: 50
+      - name: offset
+        in: query
+        required: false
+        description: Pagination offset token
+        schema:
+          type: string
+          example: "null"
+      responses:
+        '200':
+          description: Groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Record retrieved successfully
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 150
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                      offset:
+                        type: string
+                        description: Pagination offset for next page
+                        example: '#05'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/priority:
+    post:
+      tags:
+      - Groups
+      summary: Set group priority
+      description: Update group priority sender/receiver settings.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              - id
+              properties:
+                userId:
+                  type: string
+                  description: Owner user ID
+                  example: '100039'
+                id:
+                  type: string
+                  description: Group ID
+                  example: '#6'
+                receiver:
+                  type: object
+                  properties:
+                    receiver:
+                      type: boolean
+                      example: false
+                    displayOrder:
+                      type: string
+                      example: '0'
+                sender:
+                  type: string
+                  description: Sender priority flag
+                  example: '1'
+      responses:
+        '200':
+          description: Group priority updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Group not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/update:
+    put:
+      tags:
+      - Groups
+      summary: Update group
+      description: Update group name and members.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              - id
+              - name
+              - furigana
+              - contacts
+              - detachedContact
+              properties:
+                userId:
+                  type: string
+                  description: Owner user ID
+                  example: '101496'
+                id:
+                  type: string
+                  description: Group ID
+                  example: '#01'
+                name:
+                  type: string
+                  description: Group name
+                  example: Group1
+                furigana:
+                  type: string
+                  description: Group name in phonetic kana
+                  example: グループ1
+                standByGroup:
+                  type: boolean
+                  description: Standby group flag
+                  example: false
+                isBlocked:
+                  type: boolean
+                  example: false
+                isFavorite:
+                  type: boolean
+                  example: false
+                isMobile:
+                  type: boolean
+                  example: false
+                contacts:
+                  type: array
+                  minItems: 1
+                  uniqueItems: true
+                  description: Updated list of group member PTT numbers
+                  items:
+                    type: string
+                    example: 81*12345*6789
+                detachedContact:
+                  type: array
+                  uniqueItems: true
+                  description: PTT numbers to remove from group
+                  items:
+                    type: string
+                    example: 81*12345*6790
+      responses:
+        '200':
+          description: Group updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Group not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /groups/update-all:
+    put:
+      tags:
+      - Groups
+      summary: Bulk update groups
+      description: Update group flags for multiple group IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - userId
+              properties:
+                userId:
+                  type: string
+                  description: Owner user ID
+                  example: '100008'
+                groupIds:
+                  type: array
+                  uniqueItems: true
+                  items:
+                    type: string
+                  example:
+                  - '#01'
+                  - '#02'
+                nonstandByGroupIds:
+                  type: array
+                  uniqueItems: true
+                  items:
+                    type: string
+                  example:
+                  - '#03'
+                isBlocked:
+                  type: boolean
+                  example: false
+                isFavorite:
+                  type: boolean
+                  example: true
+                isStandBy:
+                  type: boolean
+                  example: false
+      responses:
+        '200':
+          description: Groups updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Record not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /help/bulkdelete:
+    delete:
+      tags:
+      - Help
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /help/create:
+    post:
+      tags:
+      - Help
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /help/delete:
+    delete:
+      tags:
+      - Help
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /help/get:
+    get:
+      tags:
+      - Help
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /help/import:
+    post:
+      tags:
+      - Help
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /help/list:
+    get:
+      tags:
+      - Help
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /help/update:
+    put:
+      tags:
+      - Help
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /help/upload-request:
+    post:
+      tags:
+      - Help
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /history/list:
+    get:
+      tags:
+      - History
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /organizations/create:
+    post:
+      tags:
+      - Organizations
+      summary: Create new organization
+      description: 'Create a new organization account with company details, admin account, and configuration.
+
+        Requires name, email, license count, call drop time, and sales channel.
+
+        '
+      operationId: createOrganization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - email
+              - accountDetail
+              properties:
+                name:
+                  type: string
+                  description: Organization/Company name
+                  example: Tanaka Corporation
+                  maxLength: 100
+                email:
+                  type: string
+                  format: email
+                  description: Primary contact email address
+                  example: admin@tanaka.com
+                accountDetail:
+                  type: object
+                  required:
+                  - organization
+                  properties:
+                    organization:
+                      type: object
+                      required:
+                      - licenseCount
+                      - callDropTime
+                      - salesChannel
+                      - isTranslate
+                      - isTranscribe
+                      - sosLocation
+                      properties:
+                        description:
+                          type: string
+                          description: Organization description
+                          maxLength: 256
+                          example: A leading technology company
+                        licenseCount:
+                          type: string
+                          description: Number of user licenses
+                          example: '1000'
+                        callDropTime:
+                          type: integer
+                          description: Automatic call drop timeout in seconds
+                          enum:
+                          - 10
+                          - 20
+                          - 30
+                          example: 10
+                        logo:
+                          type: string
+                          format: byte
+                          description: Organization logo as base64 encoded string
+                          example: iVBORw0KGgoAAAANSUhEUgAABU4AAAJwCAYAAABWEvurAAAAAXNSR0IArs4c6Q...
+                        salesChannel:
+                          type: string
+                          description: Sales channel/partner name
+                          maxLength: 100
+                          example: channel
+                        isTranslate:
+                          type: boolean
+                          description: Enable simultaneous translation feature
+                          example: true
+                        isTranscribe:
+                          type: boolean
+                          description: Enable transcription feature
+                          example: true
+                        sosLocation:
+                          type: boolean
+                          description: Enable SOS location tracking
+                          example: true
+      responses:
+        '200':
+          description: Organization created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '500':
+          description: Internal server error
+  /organizations/delete:
+    delete:
+      tags:
+      - Organizations
+      summary: Delete single organization
+      description: 'Delete a specific organization by ID.'
+      operationId: deleteOrganization
+      parameters:
+      - name: id
+        in: query
+        description: Organization ID to delete
+        required: true
+        schema:
+          type: string
+          example: '202262'
+      responses:
+        '200':
+          description: Organization deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid organization ID
+        '401':
+          description: Unauthorized
+        '404':
+          description: Organization not found
+        '500':
+          description: Internal server error
+  /organizations/delete-all:
+    post:
+      tags:
+      - Organizations
+      summary: Bulk delete organizations and related employees.
+      description: 'Delete multiple organizations and employees in a single operation.
+
+        Requires array of organization IDs to delete.
+
+        '
+      operationId: deleteAllOrganizations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                required:
+                - id
+                properties:
+                  id:
+                    type: string
+                    description: Organization ID to delete
+                    example: '202262'
+              example:
+              - id: '202262'
+              - id: '202263'
+      responses:
+        '200':
+          description: Organizations deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid request body or IDs
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /organizations/export:
+    post:
+      tags:
+      - Organizations
+      summary: Export organizations to CSV
+      description: 'Export organization data to CSV file format.
+
+        Returns downloadable CSV with selected organization records.
+
+        '
+      operationId: exportOrganizations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              - filename
+              properties:
+                data:
+                  type: array
+                  description: Array of organization IDs to export
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '202262'
+                  example:
+                  - id: '202262'
+                  - id: '202263'
+                filename:
+                  type: string
+                  description: Output filename (must end with .csv)
+                  pattern: ^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}A-Za-z0-9_\-ー]+\.csv$
+                  example: 組織リスト.csv
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Csv file generated successfully
+                  data:
+                    type: object
+                    properties:
+                      downloadUrl:
+                        type: string
+                        description: S3 pre-signed URL for CSV download
+        '400':
+          description: Invalid filename or data format
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /organizations/get:
+    get:
+      tags:
+      - Organizations
+      summary: Get organization details
+      description: 'Retrieve detailed information for a specific organization by ID.
+
+        Returns complete organization profile with all settings and configurations.
+
+        '
+      operationId: getOrganization
+      parameters:
+      - name: id
+        in: query
+        description: Organization ID
+        required: true
+        schema:
+          type: string
+          example: '202262'
+      responses:
+        '200':
+          description: Organization retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid organization ID
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Organization not found
+        '500':
+          description: Internal server error
+  /organizations/import:
+    post:
+      tags:
+      - Organizations
+      summary: Import organizations from CSV
+      description: 'Import organizations from CSV file.
+
+        CSV must contain proper headers and valid organization data.
+
+        '
+      operationId: importOrganizations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - file
+              - channel
+              - operation
+              properties:
+                channel:
+                  type: string
+                  description: Import channel identifier
+                  example: admin-import
+                file:
+                  type: string
+                  format: byte
+                  description: Base64-encoded CSV file content
+                operation:
+                  type: string
+                  readOnly: true
+                  description: Operation type (dynamic)
+                  example: dynamic
+      responses:
+        '200':
+          description: CSV imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Csv file imported successfully
+                  data:
+                    type: object
+                    properties:
+                      imported:
+                        type: integer
+                        description: Number of records imported
+                      failed:
+                        type: integer
+                        description: Number of records that failed
+                      errors:
+                        type: array
+                        items:
+                          type: string
+        '400':
+          description: Invalid CSV format or content
+        '401':
+          description: Unauthorized
+        '415':
+          description: Invalid file format (only CSV allowed)
+        '500':
+          description: Internal server error
+  /organizations/list:
+    get:
+      tags:
+      - Organizations
+      summary: List organizations
+      description: 'Retrieve a paginated list of all organizations.
+
+        Returns organization details including license count, status, translation, and transcription settings.
+
+        '
+      operationId: listOrganizations
+      parameters:
+      - name: limit
+        in: query
+        description: Number of records to return (pagination limit)
+        required: true
+        schema:
+          type: integer
+          example: 50
+      - name: offset
+        in: query
+        description: Pagination offset token (use response offset for next page, or 'null' for first page)
+        required: true
+        schema:
+          type: string
+          example: 'null'
+      responses:
+        '200':
+          description: Organizations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Record retrieved successfully
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        description: Total count of organizations
+                        example: 150
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Organization'
+                      offset:
+                        type: string
+                        description: Pagination offset for next page (null if no more pages)
+                        example: A1B2C3D4E5F6
+        '400':
+          description: Invalid input parameters
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '500':
+          description: Internal server error
+  /organizations/patch:
+    patch:
+      tags:
+      - Organizations
+      summary: Partially update organization
+      description: 'Update specific fields of an organization without requiring all fields.
+
+        Useful for minor updates like status or settings changes.
+
+        '
+      operationId: patchOrganization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Organization ID
+                  example: '202262'
+              additionalProperties: true
+      responses:
+        '200':
+          description: Organization patched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /organizations/projection:
+    get:
+      tags:
+      - Organizations
+      summary: Get organization projection
+      description: 'Retrieve specific fields/projection of organization data.
+
+        Useful for getting limited information without full record.
+
+        '
+      operationId: getOrganizationProjection
+      parameters:
+      - name: id
+        in: query
+        description: Organization ID
+        required: true
+        schema:
+          type: string
+          example: '202262'
+      responses:
+        '200':
+          description: Projection retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Organization not found
+        '500':
+          description: Internal server error
   /organizations/reset:
     post:
       tags:
-        - "Organizations"
+      - Organizations
+      summary: Reset organization password
+      description: 'Reset the administrator password for an organization.
+
+        Requires both old and new password for verification.
+
+        '
+      operationId: resetOrganizationPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - old
+              - new
+              properties:
+                old:
+                  type: string
+                  description: Current password
+                  example: currentPassword123
+                new:
+                  type: string
+                  description: New password to set
+                  example: newPassword456
       responses:
-        "200":
-          description: "200 response"
+        '200':
+          description: Password reset successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Empty"
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized or incorrect old password
+        '500':
+          description: Internal server error
+  /organizations/search:
+    get:
+      tags:
+      - Organizations
+      summary: Search organizations
+      description: 'Search for organizations based on various criteria like name, email, fleet number, or status.
+
+        Supports partial matching and optional pagination.
+
+        '
+      operationId: searchOrganizations
+      parameters:
+      - name: organization
+        in: query
+        description: Organization name (partial match)
+        required: false
+        schema:
+          type: string
+          example: Tanaka
+      - name: email
+        in: query
+        description: Organization email (must be valid email format)
+        required: false
+        schema:
+          type: string
+          format: email
+          example: admin@tanaka.com
+      - name: fleetNumber
+        in: query
+        description: Fleet/License number
+        required: false
+        schema:
+          type: string
+          example: '0050'
+      - name: salesChannel
+        in: query
+        description: Sales channel name
+        required: false
+        schema:
+          type: string
+          example: Telecom Partner A
+      - name: status
+        in: query
+        description: Organization status (active/inactive)
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          example: 'true'
+      - name: limit
+        in: query
+        description: Number of results to return
+        required: false
+        schema:
+          type: integer
+          example: 50
+      - name: offset
+        in: query
+        description: Pagination offset
+        required: false
+        schema:
+          type: string
+          example: "null"
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Organization'
+        '400':
+          description: Invalid search parameters (e.g., invalid email format)
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /organizations/update:
+    put:
+      tags:
+      - Organizations
+      summary: Update organization details
+      description: 'Update organization information.'
+      operationId: updateOrganization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - name
+              - email
+              - accountDetail
+              properties:
+                id:
+                  type: string
+                  description: Organization ID to update
+                  example: '202262'
+                name:
+                  type: string
+                  description: Updated organization name
+                  example: Tanaka Corporation New
+                  maxLength: 100
+                email:
+                  type: string
+                  format: email
+                  description: Updated contact email
+                  example: newemail@tanaka.com
+                accountDetail:
+                  type: object
+                  properties:
+                    organization:
+                      type: object
+                      required:
+                      - licenseCount
+                      - callDropTime
+                      - salesChannel
+                      - isStatus
+                      - isTranslate
+                      - isTranscribe
+                      - sosLocation
+                      - onlineStatus
+                      properties:
+                        description:
+                          type: string
+                          maxLength: 256
+                        onlineStatus:
+                          type: string
+                          enum:
+                          - online
+                          - offline
+                        licenseCount:
+                          type: string
+                          pattern: ^\d{4}$
+                          example: '0100'
+                        callDropTime:
+                          type: integer
+                          enum:
+                          - 10
+                          - 20
+                          - 30
+                          example: 30
+                        salesChannel:
+                          type: string
+                          maxLength: 100
+                        isStatus:
+                          type: boolean
+                        isTranslate:
+                          type: boolean
+                        isTranscribe:
+                          type: boolean
+                        sosLocation:
+                          type: boolean
+      responses:
+        '200':
+          description: Organization updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Organization not found
+        '500':
+          description: Internal server error
+  /others/dashboard:
+    get:
+      tags:
+      - Others
+      summary: Get dashboard statistics
+      description: Retrieves dashboard metrics including employee counts, login status, online/offline status, transcription/translation settings, and organization count (admin only)
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          oneOf:
+          - type: integer
+            minimum: 1
+            example: 99999999999
+          - type: string
+            enum: ["null"]
+            example: "null"
+        description: Optional limit (number or "null")
+      - name: offset
+        in: query
+        required: false
+        schema:
+          oneOf:
+          - type: integer
+            minimum: 0
+            example: 0
+          - type: string
+            enum: ["null"]
+            example: "null"
+        description: Optional offset (number or "null")
+      responses:
+        '200':
+          description: Dashboard metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Records retrieved successfully
+                  data:
+                    type: object
+                    properties:
+                      Item:
+                        type: object
+                        properties:
+                          empCount:
+                            type: integer
+                            example: 150
+                          loggedInCount:
+                            type: integer
+                            example: 120
+                          loggedOutCount:
+                            type: integer
+                            example: 30
+                          transcribeCount:
+                            type: integer
+                            example: 50
+                          simultaneousInterpretationCount:
+                            type: integer
+                            example: 30
+                          onlineCount:
+                            type: integer
+                            example: 100
+                          offlineCount:
+                            type: integer
+                            example: 40
+                          deactivateCount:
+                            type: integer
+                            example: 5
+                          unknownCount:
+                            type: integer
+                            example: 5
+                          orgCount:
+                            type: integer
+                            description: Only returned for admin users
+                            example: 10
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /others/error-logs:
+    post:
+      tags:
+      - Others
+      summary: Get PTT application error logs
+      description: Retrieves application logs from S3 for a specific PTT number within a date range, with optional filtering by log type and pagination support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ptt
+              - from
+              - to
+              - paging
+              properties:
+                ptt:
+                  type: string
+                  description: 'PTT number (format: 81*#####*####)'
+                  example: 81*16575*0011
+                from:
+                  type: string
+                  format: date
+                  description: Start date (ISO format)
+                  example: '2025-12-14'
+                to:
+                  type: string
+                  format: date
+                  description: End date (ISO format)
+                  example: '2026-01-13'
+                logType:
+                  type: string
+                  description: Filter by log level
+                  example: INFO
+                limit:
+                  type: integer
+                  minimum: 1
+                  maximum: 50000
+                  description: Max records per page (default 20000, max 50000)
+                  example: 5000
+                paging:
+                  type: boolean
+                  description: Enable pagination
+                  example: true
+                pageToken:
+                  type: string
+                  format: base64
+                  description: Token for next page
+                  example: eyJsaXN0VG9rIjpudWxsLCJrZXkiOm51bGwsInJvdyI6MH0=
+      responses:
+        '200':
+          description: Logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          description: Log entry from CSV
+                      nextPageToken:
+                        type: string
+                        nullable: true
+                        description: Token for next page (null if no more data)
+  /others/graph:
+    get:
+      tags:
+      - Others
+      summary: Get 28-day call activity graph
+      description: Returns outgoing call activity data for the last 28 days as a daily graph with total count and average
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          example: 99999999999
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+          nullable: true
+          example: 'null'
+      responses:
+        '200':
+          description: Graph data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        description: Total calls in 28 days
+                        example: 450
+                      avg:
+                        type: integer
+                        description: Average calls per day
+                        example: 16
+                      graph:
+                        type: array
+                        description: Daily call counts (28 values)
+                        items:
+                          type: integer
+                        minItems: 28
+                        maxItems: 28
+                        example:
+                        - 12
+                        - 15
+                        - 18
+                        - 20
+                        - 14
+                        - 16
+                        - 19
+                        - 21
+                        - 13
+                        - 17
+                        - 22
+                        - 18
+                        - 15
+                        - 19
+                        - 16
+                        - 14
+                        - 20
+                        - 23
+                        - 17
+                        - 19
+                        - 15
+                        - 18
+                        - 16
+                        - 21
+                        - 19
+                        - 17
+                        - 20
+                        - 18
+  /pull/config-emp:
+    get:
+      tags:
+      - Sync
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /pull/config-org:
+    get:
+      tags:
+      - Sync
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /pull/contacts:
+    get:
+      tags:
+      - Sync
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /pull/group:
+    get:
+      tags:
+      - Sync
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /pull/groups:
+    get:
+      tags:
+      - Groups
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /pull/refresh:
+    post:
+      tags:
+      - Sync
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /push/call:
+    post:
+      tags:
+      - Push Notifications
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /push/notify:
+    post:
+      tags:
+      - Push Notifications
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /push/token:
+    put:
+      tags:
+      - Push Notifications
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+  /users:
+    get:
+      tags:
+      - Users
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+    put:
+      tags:
+      - Users
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+    post:
+      tags:
+      - Users
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+    delete:
+      tags:
+      - Users
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Orgin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: "Enter your JWT token (e.g., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)"
+      description: Enter your JWT token (e.g., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)
   schemas:
+    Employee:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '202334'
+        name:
+          type: string
+          example: Tanaka Taro
+        furigana:
+          type: string
+          example: たなかたろう
+        pttNo:
+          type: string
+          example: 81*12345*6789
+        hint:
+          type: string
+          example: Pass@123
+        isActive:
+          type: boolean
+          example: true
+        isDeleted:
+          type: boolean
+          example: false
+        isLoggedIn:
+          type: boolean
+          example: true
+        organizationId:
+          type: string
+          example: '202262'
+        appVersion:
+          type: string
+          example: '8.9'
+        appOnlineStatus:
+          type: string
+          enum:
+          - online
+          - offline
+          - away
+          - unknown
+          - deactivate
+          example: online
+        createdAt:
+          type: string
+          format: date-time
+          example: '2025-01-15 10:30:00'
+        appLoginDateTime:
+          type: string
+          format: date-time
+        appLogoutDateTime:
+          type: string
+          format: date-time
+        appLastSeenDateTime:
+          type: string
+          format: date-time
+        accountDetail:
+          type: object
+          properties:
+            employee:
+              type: object
+              properties:
+                designation:
+                  type: string
+                  example: Manager
+                machine:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                email:
+                  type: string
+                  format: email
+                telephoneNo:
+                  type: string
+                phoneStatus:
+                  type: string
+                  enum:
+                  - active
+                  - inActive
+                onlineStatus:
+                  type: string
+                  enum:
+                  - online
+                  - offline
+                checkOthersOnlineStatus:
+                  type: boolean
+                viewUserActivity:
+                  type: boolean
+                settings:
+                  type: object
+                  description: Employee sound, call, and device settings
+    SuccessResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Operation completed successfully
+        data:
+          type: object
+          description: Response data (structure varies by endpoint)
     Empty:
-      title: "Empty Schema"
-      type: "object"
-
+      title: Empty Schema
+      type: object
+    Organization:
+      type: object
+      description: Organization object containing all organization data
+      properties:
+        id:
+          type: string
+          description: Unique organization identifier
+          example: '202262'
+        name:
+          type: string
+          description: Organization/Company name
+          example: Tanaka Corporation
+        email:
+          type: string
+          format: email
+          description: Primary contact email
+          example: admin@tanaka.com
+        fleetNumber:
+          type: string
+          description: Fleet/License identifier
+          example: '0050'
+        isActive:
+          type: boolean
+          description: Active status
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+          example: '2023-01-15T10:30:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: '2023-12-20T14:45:30Z'
+        accountDetail:
+          type: object
+          properties:
+            organization:
+              type: object
+              properties:
+                description:
+                  type: string
+                licenseCount:
+                  type: string
+                callDropTime:
+                  type: integer
+                salesChannel:
+                  type: string
+                isStatus:
+                  type: boolean
+                isTranslate:
+                  type: boolean
+                isTranscribe:
+                  type: boolean
+                sosLocation:
+                  type: boolean
+                settings:
+                  $ref: '#/components/schemas/Settings'
+    Group:
+      type: object
+      description: Group record with membership details
+      properties:
+        groupId:
+          type: string
+          example: '#01'
+        userId:
+          type: string
+          example: '101491'
+        name:
+          type: string
+          example: Group1
+        furigana:
+          type: string
+          example: グループ1
+        contactsCount:
+          type: integer
+          example: 3
+        receiver:
+          type: object
+          properties:
+            receiver:
+              type: boolean
+              example: false
+            displayOrder:
+              type: string
+              example: '0'
+        sender:
+          type: string
+          example: '1'
+        standByGroup:
+          type: boolean
+          example: false
+        pttNo:
+          type: string
+          example: 81*12345*6789
+        contacts:
+          type: array
+          items:
+            type: string
+            example: 81*12345*6789
+        isMobile:
+          type: boolean
+          example: false
+        isFavorite:
+          type: boolean
+          example: false
+        isBlocked:
+          type: boolean
+          example: false
+        isDeleted:
+          type: boolean
+          example: false
+    GroupContact:
+      type: object
+      description: Group member contact details
+      properties:
+        isDeleted:
+          type: boolean
+          example: false
+        deviceId:
+          type: string
+          example: 5860c423a1f91435
+        name:
+          type: string
+          example: Tanaka Taro
+        pttNo:
+          type: string
+          example: 81*12345*6789
+        deviceName:
+          type: string
+          example: M1
+        furigana:
+          type: string
+          example: たなかたろう
+    Contact:
+      type: object
+      description: Contact record with device and user status information
+      properties:
+        contactId:
+          type: string
+          description: Unique contact identifier (ULID)
+          example: '01HHDKG6QP9DYN1EQ3AT7T7QCQJ'
+        userId:
+          type: string
+          description: User ID who owns this contact
+          example: '101670'
+        name:
+          type: string
+          description: Contact name
+          example: 田中太郎
+        furigana:
+          type: string
+          description: Contact name in Japanese phonetic characters
+          example: たなかたろう
+        pttNo:
+          type: string
+          pattern: ^81\*(\d{5})\*(\d{4})$
+          description: PTT number in format 81*#####*####
+          example: 81*10220*1046
+        deviceId:
+          type: string
+          description: Associated device ID
+          example: 5860c423a1f91435
+        deviceName:
+          type: string
+          description: Associated device name
+          example: M1
+        isBlocked:
+          type: boolean
+          description: Whether contact is blocked
+          default: false
+          example: false
+        isFavorite:
+          type: boolean
+          description: Whether contact is marked as favorite
+          default: false
+          example: false
+        isMobile:
+          type: boolean
+          description: Whether contact is a mobile user
+          default: false
+          example: false
+        isDeleted:
+          type: boolean
+          description: Soft delete flag
+          default: false
+          example: false
+        isContactImported:
+          type: boolean
+          description: Whether contact was imported from CSV
+          default: false
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          description: Contact creation timestamp
+          example: '2025-01-15T10:30:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: '2025-01-20T14:45:30Z'
+        userStatus:
+          type: string
+          nullable: true
+          description: Online status of the contact user (online/offline)
+          example: online
+    ErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 422
+        message:
+          type: string
+          description: Error message
+          example: Validation error
+        data:
+          type: object
+          nullable: true
+          description: Additional error details
+    Settings:
+      type: object
+      description: Sound, notification, and device settings
+      properties:
+        sound:
+          type: object
+          properties:
+            pttNotificationSound:
+              type: string
+              description: PTT notification sound type
+              example: tone1
+            pttNotificationVolume:
+              type: string
+            notificationVolume:
+              type: string
+            replyTone:
+              type: string
+            repeatSetting:
+              type: string
+            vibrateReplyRequestReceived:
+              type: boolean
+            vibrationReceivingPtt:
+              type: boolean
+        pTalk:
+          type: object
+          properties:
+            UsePTalk:
+              type: boolean
+            userState:
+              type: boolean
+        screenSettings:
+          type: object
+          properties:
+            turnOnScreenPttBluetoothPressed:
+              type: boolean
+            dimMode:
+              type: boolean
+            baseScreen:
+              type: string
+        pttButtonSettings:
+          type: object
+          properties:
+            volumeButtonUp:
+              type: boolean
+            volumeButtonDown:
+              type: boolean
+            userSettings:
+              type: boolean
+        voiceRecording:
+          type: object
+          properties:
+            isRecordingSettings:
+              type: boolean
+            storage:
+              type: string
+            totalStorageSizeLimit:
+              type: string
+            paths:
+              type: string
+        SOS:
+          type: object
+          properties:
+            actionForSOS:
+              type: string
+            sosPerson:
+              type: string
+            pttNo:
+              type: string
+        networkFailure:
+          type: object
+          properties:
+            failureIndication:
+              type: string
+        pttBoaster:
+          type: object
+  responses:
+    UnauthorizedError:
+      description: Unauthorized - Invalid or missing JWT token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Unauthorized
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: Internal server error
+security:
+- bearerAuth: []
