@@ -55,47 +55,192 @@ paths:
     post:
       tags:
       - Activities
+      summary: Create activity logs (Batch)
+      description: Batch upload activity/call logs from a device.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required:
+                - name
+                - isGroup
+                - callType
+                - callTime
+                - orgId
+                - status
+                properties:
+                  name:
+                    type: string
+                    description: Contact/Group Name
+                    example: Tanaka Taro
+                  isGroup:
+                    type: boolean
+                    description: Is a group call?
+                    example: false
+                  pttNo:
+                    type: string
+                    description: PTT Number (Required if not group)
+                    pattern: ^81\*(\d{5})\*(\d{4})$
+                    example: 81*12345*6789
+                  groupId:
+                    type: string
+                    description: Group ID (Required if group)
+                    example: '#01'
+                  callType:
+                    type: string
+                    enum:
+                    - call_individual
+                    - call_group
+                    - call_sos
+                    - callAlert
+                    example: call_individual
+                  callTime:
+                    type: string
+                    description: Duration or timestamp info
+                    example: '00:05:23'
+                  orgId:
+                    type: string
+                    description: Organization ID
+                    example: '202262'
+                  status:
+                    type: string
+                    enum:
+                    - incoming
+                    - outgoing
+                    - missed
+                    example: incoming
       responses:
-        '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+        '201':
+          description: Records created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Payload empty
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /activities/get:
     get:
       tags:
       - Activities
+      summary: Get activity detail
+      description: Retrieve a specific activity log.
+      parameters:
+      - name: userId
+        in: query
+        required: true
+        schema:
+          type: string
+          example: '101100'
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Activity Log ID (ULID)
+          example: 01JY...
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Activity retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      Item:
+                        $ref: '#/components/schemas/Activity'
+        '404':
+          description: Record not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /activities/list:
     get:
       tags:
       - Activities
+      summary: List activities
+      description: Retrieve paginated activity logs for a user.
+      parameters:
+      - name: userId
+        in: query
+        required: true
+        description: User ID to fetch logs for
+        schema:
+          type: string
+          example: '101100'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          example: 50
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "null"
+      - name: startDate
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+          example: '2025-01-01'
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+          example: '2025-01-31'
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Activities retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Activity'
+                      offset:
+                        type: string
+                        nullable: true
+        '404':
+          description: No records found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /auth/login:
     post:
       tags:
@@ -282,6 +427,39 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /auth/forgot:
+    post:
+      tags:
+      - Auth
+      summary: Forgot Password
+      description: Initiate password reset process by sending a new password to the user's email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Registered email address
+                  example: user@example.com
+      responses:
+        '200':
+          description: Password reset email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+        '404':
+          description: Account not found or user not authorized
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /contacts/create:
     post:
       tags:
@@ -1015,125 +1193,361 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   /devices/bulkdelete:
-    delete:
+    post:
       tags:
       - Devices
+      summary: Bulk delete devices
+      description: Delete multiple devices. Requires passing the current attached count to ensure safety.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                required:
+                - id
+                - deviceAttachedCount
+                properties:
+                  id:
+                    type: string
+                    description: Device ID
+                    example: 01JY6N7...
+                  deviceAttachedCount:
+                    type: integer
+                    description: Number of employees currently attached to this device (must be 0 to delete)
+                    example: 0
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Devices deleted successfully (or partially)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/SuccessResponse'
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /devices/create:
     post:
       tags:
       - Devices
+      summary: Create new device
+      description: Create a new device record.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  description: Device name
+                  example: Device-A
+                startDate:
+                  type: string
+                  format: date
+                  description: Start date (YYYY-MM-DD)
+                  example: '2025-01-01'
+                endDate:
+                  type: string
+                  format: date
+                  description: End date (YYYY-MM-DD)
+                  example: '2030-12-31'
       responses:
-        '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+        '201':
+          description: Device created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/SuccessResponse'
+        '409':
+          description: Device with this name already exists
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /devices/current:
     get:
       tags:
       - Devices
+      summary: Get current devices list
+      description: Retrieve a list of current devices (alias for list with specific logic if any, currently similar to list).
+      parameters:
+      - name: limit
+        in: query
+        required: true
+        schema:
+          type: integer
+          example: 50
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "null"
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Devices retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      todayDate:
+                        type: string
+                        format: date
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Device'
+                      offset:
+                        type: string
+                        nullable: true
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /devices/delete:
     delete:
       tags:
       - Devices
+      summary: Delete a device
+      description: Delete a single device by ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: string
+                  description: Device ID to delete
+                  example: 01JY6N7...
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Device deleted successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Device not found or in use
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /devices/get:
     get:
       tags:
       - Devices
+      summary: Get device details
+      description: Retrieve details of a specific device by ID.
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+          example: 01JY6N7...
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Device retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      Item:
+                        $ref: '#/components/schemas/Device'
+        '404':
+          description: Device not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /devices/import:
     post:
       tags:
       - Devices
+      summary: Import devices from CSV
+      description: Bulk import devices via CSV file.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - file
+              - operation
+              - channel
+              properties:
+                file:
+                  type: string
+                  format: byte
+                  description: Base64-encoded CSV file
+                operation:
+                  type: string
+                  enum:
+                  - dynamic
+                  example: dynamic
+                channel:
+                  type: string
+                  description: Channel for async progress tracking
+                  example: devices-import-123
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Import started/completed successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      totalRows:
+                        type: integer
+                      invalidRowIndices:
+                        type: array
+                        items:
+                          type: integer
+        '403':
+          description: Forbidden (Admin only)
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /devices/list:
     get:
       tags:
       - Devices
+      summary: List devices
+      description: Retrieve a paginated list of devices.
+      parameters:
+      - name: limit
+        in: query
+        required: true
+        schema:
+          type: integer
+          example: 50
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "null"
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Devices retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      todayDate:
+                        type: string
+                        format: date
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Device'
+                      offset:
+                        type: string
+                        nullable: true
+        '404':
+          description: No records found
+        '500':
+          description: Internal server error
   /devices/update:
     put:
       tags:
       - Devices
+      summary: Update device
+      description: Update an existing device record.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - name
+              properties:
+                id:
+                  type: string
+                  description: Device ID
+                  example: 01JY6N7...
+                name:
+                  type: string
+                  description: Device name
+                  example: Device-A-New
+                startDate:
+                  type: string
+                  format: date
+                  description: Start date (YYYY-MM-DD)
+                  example: '2025-01-01'
+                endDate:
+                  type: string
+                  format: date
+                  description: End date (YYYY-MM-DD)
+                  example: '2030-12-31'
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Device updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Device not found
+        '409':
+          description: Device name conflict
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /employees/create:
     post:
       tags:
@@ -2541,129 +2955,395 @@ paths:
           description: Unauthorized
         '404':
           description: Record not found
+  /help/bulkdelete:
+    post:
+      tags:
+      - Help
+      summary: Bulk delete help items
+      description: Delete multiple help items (Categories or Articles).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required:
+                - parent
+                - child
+                properties:
+                  parent:
+                    type: string
+                    description: Parent ID (Use "null" for Categories)
+                    example: "null"
+                  child:
+                    type: string
+                    description: Item ID (SK)
+                    example: 01JY...
+      responses:
+        '200':
+          description: Items deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '422':
           description: Validation error
         '500':
           description: Internal server error
-  /help/bulkdelete:
-    delete:
-      tags:
-      - Help
-      responses:
-        '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Empty'
   /help/create:
     post:
       tags:
       - Help
+      summary: Create help item
+      description: Create a Help Category (Parent) or Article (Child).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/HelpCategoryCreate'
+                - $ref: '#/components/schemas/HelpArticleCreate'
       responses:
-        '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+        '201':
+          description: Item created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/SuccessResponse'
+        '409':
+          description: Title already exists
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /help/delete:
     delete:
       tags:
       - Help
+      summary: Delete help item
+      description: Delete a specific help item.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - parent
+              - child
+              properties:
+                parent:
+                  type: string
+                  description: Parent ID (Use "null" for Categories)
+                  example: "null"
+                child:
+                  type: string
+                  description: Item ID
+                  example: 01JY...
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Item deleted successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Record not found
+        '500':
+          description: Internal server error
   /help/get:
     get:
       tags:
       - Help
+      summary: Get help item detail
+      description: Retrieve details of a specific help category or article.
+      parameters:
+      - name: parent
+        in: query
+        required: true
+        description: Parent ID (Use "null" for Categories)
+        schema:
+          type: string
+          example: "null"
+      - name: child
+        in: query
+        required: true
+        description: Item ID
+        schema:
+          type: string
+          example: 01JY...
       responses:
         '200':
-          description: 200 response
+          description: Item retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      Item:
+                        $ref: '#/components/schemas/HelpItem'
+        '404':
+          description: Record not found
+        '500':
+          description: Internal server error
   /help/import:
     post:
       tags:
       - Help
+      summary: Import help from CSV
+      description: Bulk import help articles.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - file
+              - operation
+              - channel
+              - parent
+              properties:
+                file:
+                  type: string
+                  description: Base64 CSV content
+                operation:
+                  type: string
+                  example: dynamic
+                channel:
+                  type: string
+                  example: help-import-123
+                parent:
+                  type: string
+                  description: Category ID to import into
+                  example: 01JY...
       responses:
         '200':
-          description: 200 response
+          description: Import started successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      totalRows:
+                        type: integer
+                      invalidRowIndices:
+                        type: array
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /help/list:
     get:
       tags:
       - Help
+      summary: List help items
+      description: List Categories (if parent=null) or Articles (if parent=UUID).
+      parameters:
+      - name: parent
+        in: query
+        required: false
+        description: Parent ID. If "null" or omitted, lists Categories.
+        schema:
+          type: string
+          example: "null"
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: deviceId
+        in: query
+        required: false
+        description: Filter by device ID (only for root list to count children)
+        schema:
+          type: string
+      - name: appVersion
+        in: query
+        required: false
+        schema:
+          type: integer
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: List retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HelpItem'
+                      offset:
+                        type: string
+                        nullable: true
+        '500':
+          description: Internal server error
   /help/update:
     put:
       tags:
       - Help
+      summary: Update help item
+      description: Update a Help Category or Article.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/HelpCategoryUpdate'
+                - $ref: '#/components/schemas/HelpArticleUpdate'
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Orgin:
-              schema:
-                type: string
+          description: Item updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Record not found
+        '409':
+          description: Title conflict
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /help/upload-request:
     post:
       tags:
       - Help
+      summary: Get upload presigned URL
+      description: Generate a presigned S3 URL for uploading PDF files.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - fileName
+              properties:
+                fileName:
+                  type: string
+                  example: manual.pdf
       responses:
         '200':
-          description: 200 response
+          description: URL generated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      uploadUrl:
+                        type: string
+                        description: S3 Presigned URL
+                      s3Key:
+                        type: string
+                        description: Key to be used in create/update payload
+        '422':
+          description: Invalid filename
+        '500':
+          description: Internal server error
   /history/list:
     get:
       tags:
       - History
+      summary: List History Records
+      description: Retrieve a paginated list of history records for a user.
+      parameters:
+      - name: limit
+        in: query
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: Max records to return
+      - name: offset
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Pagination offset
+      - name: userId
+        in: query
+        required: true
+        schema:
+          type: string
+        description: User ID
       responses:
         '200':
-          description: 200 response
+          description: History retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Activity'
+                      offset:
+                        type: string
+                        nullable: true
+        '404':
+          description: Records not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /organizations/create:
     post:
       tags:
@@ -3604,105 +4284,401 @@ paths:
     get:
       tags:
       - Sync
+      summary: Get Employee Configuration
+      description: Retrieve configuration details for a specific employee.
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Employee ID
       responses:
         '200':
-          description: 200 response
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
+          description: Configuration retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/EmployeeConfig'
+        '404':
+          description: Employee not found
+        '500':
+          description: Internal server error
   /pull/config-org:
     get:
       tags:
       - Sync
+      summary: Get Organization Configuration
+      description: Retrieve configuration details for an organization.
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Organization ID
       responses:
         '200':
-          description: 200 response
+          description: Configuration retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                $ref: '#/components/schemas/OrgConfig'
+        '404':
+          description: Organization not found
+        '500':
+          description: Internal server error
   /pull/contacts:
     get:
       tags:
       - Sync
+      summary: Sync Contacts
+      description: Retrieve a paginated list of contacts for synchronization.
+      parameters:
+      - name: userId
+        in: query
+        required: true
+        schema:
+          type: string
+        description: User ID requesting the contacts
+      - name: limit
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Pagination cursor
       responses:
         '200':
-          description: 200 response
+          description: Contacts retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Contact'
+                      offset:
+                        type: string
+                        nullable: true
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /pull/group:
     get:
       tags:
       - Sync
+      summary: Get Group Details
+      description: Retrieve details for a specific group.
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Group ID
+      - name: userId
+        in: query
+        required: true
+        schema:
+          type: string
+        description: User ID requesting group info
       responses:
         '200':
-          description: 200 response
+          description: Group retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      Item:
+                        $ref: '#/components/schemas/GroupDetail'
+        '404':
+          description: Group not found
+        '500':
+          description: Internal server error
   /pull/groups:
     get:
       tags:
-      - Groups
+      - Sync
+      summary: List Groups
+      description: Retrieve a paginated list of groups for a user.
+      parameters:
+      - name: userId
+        in: query
+        required: true
+        schema:
+          type: string
+        description: User ID
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         '200':
-          description: 200 response
+          description: Groups retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      Items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                      offset:
+                        type: string
+                        nullable: true
+        '500':
+          description: Internal server error
   /pull/refresh:
     post:
       tags:
       - Sync
+      summary: Refresh Token
+      description: Refresh the JWT access token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - token
+              properties:
+                token:
+                  type: string
+                  description: Refresh token
       responses:
         '200':
-          description: 200 response
+          description: Token refreshed successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: object
+                        properties:
+                          access:
+                            type: string
+                            description: New access token
+        '404':
+          description: Invalid token or unauthorized
+        '500':
+          description: Internal server error
   /push/call:
     post:
       tags:
       - Push Notifications
+      summary: Notify Devices about Incoming Call
+      description: Send push notifications to devices for an incoming call.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - pttNos
+              - data
+              properties:
+                pttNos:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 1
+                  description: List of PTT numbers to notify
+                  example: ["81*12345*6789"]
+                data:
+                  type: object
+                  description: Payload to send via SNS
+                  minProperties: 1
+                  example:
+                    type: "incoming_call"
+                    caller: "User A"
       responses:
         '200':
-          description: 200 response
+          description: Notifications sent successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Empty'
+        '404':
+          description: Device not found for provided PTT numbers
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /push/notify:
     post:
       tags:
       - Push Notifications
+      summary: Send General Push Notification
+      description: Send a push notification to specific PTT numbers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - pttNos
+              - data
+              properties:
+                logId:
+                  type: string
+                  description: Optional log ID for tracking
+                pttNos:
+                  type: array
+                  items:
+                    type: string
+                    pattern: ^81\*(\d{5})\*(\d{4})$
+                  minItems: 1
+                  description: List of PTT numbers to notify
+                  example: ["81*12345*6789"]
+                data:
+                  type: object
+                  required:
+                  - type
+                  - title
+                  - body
+                  properties:
+                    type:
+                      type: string
+                      description: Notification type
+                      example: "text_message"
+                    title:
+                      type: string
+                      description: Notification title
+                      example: "New Message"
+                    body:
+                      type: object
+                      description: Notification body payload
+                      example: { "message": "Hello" }
       responses:
         '200':
-          description: 200 response
+          description: Notifications sent successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      log:
+                        type: object
+                        description: Log details if generated
+        '404':
+          description: Device not found or offline
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /push/token:
     put:
       tags:
       - Push Notifications
+      summary: Register/Update Device Token
+      description: Register or update the Firebase/SNS token for a device.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - token
+              properties:
+                id:
+                  type: string
+                  description: Device ID
+                  example: "01JY..."
+                token:
+                  type: string
+                  description: Firebase registration token
+                  example: "fcm_token_..."
       responses:
         '200':
-          description: 200 response
+          description: Token registered successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Empty'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      deviceEndpointArn:
+                        type: string
+                        description: AWS SNS Endpoint ARN
+        '400':
+          description: Invalid token
+        '404':
+          description: Device not found
+        '422':
+          description: Validation error
+        '500':
+          description: Internal server error
   /users:
     get:
       tags:
@@ -3998,19 +4974,37 @@ components:
           example: false
         deviceId:
           type: string
-          example: 5860c423a1f91435
+    Device:
+      type: object
+      description: Device record
+      properties:
+        id:
+          type: string
+          description: Unique device identifier
+          example: 01JY6N7...
         name:
           type: string
-          example: Tanaka Taro
-        pttNo:
+          description: Device assigned name
+          example: Device-1
+        startDate:
           type: string
-          example: 81*12345*6789
-        deviceName:
+          format: date
+          description: Validity start date
+          example: '2025-01-01'
+        endDate:
           type: string
-          example: M1
-        furigana:
+          format: date
+          description: Validity end date
+          example: '2030-01-01'
+        deviceAttachedCount:
+          type: integer
+          description: Number of users currently attached
+          example: 0
+        todayDate:
           type: string
-          example: たなかたろう
+          format: date
+          description: Current server date (returned in responses)
+          example: 5860c423a1f91435
     Contact:
       type: object
       description: Contact record with device and user status information
@@ -4174,6 +5168,288 @@ components:
               type: string
         pttBoaster:
           type: object
+    HelpItem:
+      type: object
+      description: Help Category (Parent) or Article (Child)
+      properties:
+        setId:
+          type: string
+          description: Partition Key (root or Parent ID)
+          example: root
+        subSetId:
+          type: string
+          description: Sort Key (ID)
+          example: 01JY...
+        name:
+          type: string
+          description: Title
+          example: General Settings
+        type:
+          type: string
+          example: null
+          description: "null for Category, 'text'/'file' for Article"
+        description:
+          type: string
+          description: "null for Category, HTML/Text for Article"
+        appVersion:
+          type: integer
+          example: 1
+        childCount:
+          type: integer
+          description: Number of articles (for Categories)
+          example: 5
+        file:
+          type: object
+          properties:
+            name:
+              type: string
+            url:
+              type: string
+    HelpCategoryCreate:
+      type: object
+      required:
+      - parent
+      - name
+      properties:
+        parent:
+          type: string
+          const: "null"
+          example: "null"
+        name:
+          type: string
+          description: Category Name
+          example: General
+    HelpArticleCreate:
+      type: object
+      required:
+      - parent
+      - name
+      - type
+      - description
+      - deviceIds
+      - appVersion
+      properties:
+        parent:
+          type: string
+          description: Parent Category ID
+          example: 01JY...
+        name:
+          type: string
+          description: Article Title
+          example: How to login
+        type:
+          type: string
+          enum:
+          - text
+          - file
+          example: text
+        description:
+          type: string
+          description: Content
+          example: Step 1...
+        deviceIds:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - type: string
+              const: all
+          example: ["5860..."]
+        appVersion:
+          type: integer
+          example: 1
+        fileName:
+          type: string
+          description: S3 Key (if type=file)
+    EmployeeConfig:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            Item:
+              $ref: '#/components/schemas/Employee'
+    OrgConfig:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            Item:
+              $ref: '#/components/schemas/Organization'
+    GroupDetail:
+      type: object
+      description: Group record with detailed contact information
+      properties:
+        groupId:
+          type: string
+          example: '#01'
+        userId:
+          type: string
+          example: '101491'
+        name:
+          type: string
+          example: Group1
+        furigana:
+          type: string
+          example: グループ1
+        contactsCount:
+          type: integer
+          example: 3
+        receiver:
+          type: object
+          description: Receiver settings
+        sender:
+          type: string
+          example: '1'
+        standByGroup:
+          type: boolean
+          example: false
+        pttNo:
+          type: string
+          example: 81*12345*6789
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupContactDetail'
+        isMobile:
+          type: boolean
+          example: false
+        isFavorite:
+          type: boolean
+          example: false
+        isBlocked:
+          type: boolean
+          example: false
+        isDeleted:
+          type: boolean
+          example: false
+    GroupContactDetail:
+      type: object
+      properties:
+        name:
+          type: string
+        pttNo:
+          type: string
+        deviceId:
+          type: string
+        deviceName:
+          type: string
+        furigana:
+          type: string
+        isDeleted:
+          type: boolean
+
+    HelpCategoryUpdate:
+      type: object
+      required:
+      - parent
+      - child
+      - name
+      properties:
+        parent:
+          type: string
+          const: "null"
+        child:
+          type: string
+          description: Category ID
+        name:
+          type: string
+    HelpArticleUpdate:
+      type: object
+      required:
+      - parent
+      - child
+      - name
+      - type
+      - description
+      properties:
+        parent:
+          type: string
+          description: Category ID
+        child:
+          type: string
+          description: Article ID
+        name:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+        deviceIds:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - type: string
+              const: all
+        appVersion:
+          type: integer
+        fileName:
+          type: string
+    Activity:
+      type: object
+      description: Activity/Call Log Record
+      properties:
+        id:
+          type: string
+          description: Unique Activity ID (ULID)
+          example: 01JY...
+        userId:
+          type: string
+          description: User ID (Partition Key)
+          example: '101100'
+        orgId:
+          type: string
+          description: Organization ID
+          example: '202262'
+        name:
+          type: string
+          description: Display Name (Enriched)
+          example: Tanaka Taro
+        isGroup:
+          type: boolean
+          example: false
+        callType:
+          type: string
+          enum:
+          - call_individual
+          - call_group
+          - call_sos
+          - callAlert
+          example: call_individual
+        status:
+          type: string
+          enum:
+          - incoming
+          - outgoing
+          - missed
+          example: incoming
+        callTime:
+          type: string
+          example: '00:05:23'
+        pttNo:
+          type: string
+          example: 81*12345*6789
+        groupId:
+          type: string
+          nullable: true
+          example: null
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp
+          example: '2025-01-23T10:00:00Z'
   responses:
     UnauthorizedError:
       description: Unauthorized - Invalid or missing JWT token
